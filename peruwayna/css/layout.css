@@ -1,0 +1,540 @@
+/* Table of Content
+==================================================
+	# Site Styles
+    ### Menu Boxes
+    ### Slider Home
+	# Page Styles
+    # Widget Styles
+	# Media Queries
+	# Font-Face */
+
+/* # Site Styles
+================================================== */
+
+body {
+    
+}
+a.btn {
+    color: #fff;
+}
+.header-message {
+    margin: 65px 0 30px;
+}
+.loginForm {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border: 1px solid #e3e3e3;
+    margin: 10px auto;
+    padding: 30px;
+    width: 270px;
+}
+#login_error {
+    background: #fff;
+    border-left: 4px solid #dd3d36;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    margin: 0 auto;
+    padding: 12px;
+    width: 270px;
+}
+
+.panel-theme-primary {
+    border-color: #fdde21;
+}
+.panel-theme-primary > .panel-heading {
+    background-image: -webkit-linear-gradient(top, #ffd300 0%, #ffda29 100%);
+    background-image: -o-linear-gradient(top, #ffd300 0%, #ffda29 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffd300), to(#ffda29));
+    background-image: linear-gradient(to bottom, #ffd300 0%, #ffda29 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffd300', endColorstr='#ffffda29', GradientType=0);
+    background-repeat: repeat-x;
+}
+.panel-theme-primary > .panel-heading {
+    background-color: #ffd300;
+    border-color: #ffd300;
+    color: #fff;
+    font-family: 'MyriadProSemibold';
+    font-size: 36px;
+    letter-spacing: 0.5px;
+}
+.panel-theme-primary > .panel-heading .dropdown {
+    cursor: pointer;
+}
+.panel-teacher-primary {
+    border-color: #ff664f;
+}
+.panel-teacher-primary > .panel-heading {
+    background-image: -webkit-linear-gradient(top, #ff4e34 0%, #fb3c20 100%);
+    background-image: -o-linear-gradient(top, #ff4e34 0%, #fb3c20 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ff4e34), to(#fb3c20));
+    background-image: linear-gradient(to bottom, #ff4e34 0%, #fb3c20 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffd300', endColorstr='#ffffda29', GradientType=0);
+    background-repeat: repeat-x;
+}
+.panel-teacher-primary > .panel-heading {
+    background-color: #ff4e34;
+    border-color: #ff4e34;
+    color: #fff;
+    font-family: 'MyriadProSemibold';
+    font-size: 36px;
+    letter-spacing: 0.5px;
+}
+.panel-teacher-primary > .panel-heading .dropdown {
+    cursor: pointer;
+}
+.panel-heading > .img-thumbnail {
+    padding: 1px;
+}
+
+#myclasses-teacher th, #myclasses-teacher td {
+    font-size: 80%;
+    line-height: 2em!important;
+}
+.available, .confirm, .complete {
+    color: #00b63e;
+}
+.cancel, .suspend {
+    color: #f8040e;
+}
+.miss {
+    color: #581fde;
+}
+
+.boxtron {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    margin: 10px 40px 20px;
+    padding: 20px;
+}
+.boxtron.red {
+    background-color: #f00;
+    color: #fff;
+}
+.boxtron h1 {
+    font-size: 30px;
+    margin: 0;
+}
+
+div[class*="list-group col-"] {
+    padding-right: 0px;
+}
+h1.separator {
+    color: #F0A609;
+    font-size: 60px;
+}
+.box.red {
+    background-color: #ff4546;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 38px;
+    font-weight: bold;
+    line-height: 2.7em;
+}
+.box.red.small {
+    display: block;
+    font-size: 19px;
+    line-height: 1em;
+    margin: 39px auto;
+    padding: 12px 30px;
+    width: 99%;
+}
+.box.gray {
+    background-color: #a5a5a5;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+}
+.header-message span#count {
+    display: inline-block;
+}
+.availableH .checkbox {
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+
+/* # Admin Panel - General
+================================================== */
+.tag-container, .tag-container img {
+    height: 140px;
+    width: 140px;
+}
+label.error {
+    color: red;
+}
+form#HourTeacherForm {
+    display: inline-block;
+    width: 100%;
+}
+.newaccount-meesage {
+    margin-bottom: 30px;
+}
+.newaccount-meesage p {
+    font-size: 12px;
+    margin: 0;
+}
+.newaccount-meesage .create {
+    font-size: 15px;
+}
+
+#loginStudent .remember {
+    margin: 0;
+}
+#loginStudent .remember .checkbox {
+    margin: 0;
+}
+#loginStudent .remember label,
+#loginStudent .remember a {
+    font-size: 12px;
+    line-height: 1.7em;
+}
+.registerForm {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border: 1px solid #e3e3e3;
+    margin: 10px auto;
+    padding: 30px;
+    width: 530px
+}
+.center-btn {
+    margin: 0 auto;
+    width: 200px;
+}
+input#registerStep {
+    margin-top: 50px;
+}
+.secondstep {
+    display: none;
+}
+#thankMessage {
+    display: none;   
+}
+
+
+/* # Student Panel - General
+================================================== */
+
+#middle-menu {
+    color: #ffffff;
+    margin: 0 auto;
+    width: 700px;
+}
+#middle-menu > div {
+    box-sizing: border-box;
+    float: left;
+    min-height: 110px;
+    padding: 10px 10px;
+}
+
+.level-box {
+    background-color: #ff4723;
+    border-radius: 5px;
+    width: 24%;
+}
+.hours-used-box {
+    background-color: #00b389;
+    border-radius: 5px;
+    width: 24%;
+}
+.message-box {
+    background-color: #017b90;
+    border-radius: 5px;
+    width: 36.5%;
+}
+.myhours-box {
+    background-color: #00acac;
+    border-radius: 5px;
+    margin-right: 0px;
+    width: 47%;
+}
+.myhours-box h1,
+.myhours-box h6 {
+    clear: initial;
+    float: left;
+}
+.myhours-box h6.float {
+    float: right;
+    line-height: 0.9em;
+    margin: 16px 0;
+    width: 116px;
+}
+.myhours-box h1 {
+    line-height: 1.5em;
+    text-align: center;
+    width: 150px;
+}
+.myhours-box h6.no-margin {
+    line-height: 3.5em;
+}
+
+td.confirmed {
+    color: #00b75e;
+    text-transform: uppercase;
+}
+td.suspended {
+    background-color: red;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#teacher-info .jumbotron p {
+    font-size: 15px;
+}
+#teacher-info .datepicker-embed {
+    margin-right: 0px;
+}
+.datepicker-byhour {
+    margin-right: 0px;
+}
+form.availableHours {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    float: left;
+    height: 243px;
+    width: 215px;
+}
+form.availableHours .chooseDate {
+    background-color: #eee;
+    border-bottom: 1px solid #ccc;
+    height: 31px;
+    line-height: 2em;
+    padding: 1px 10px;
+}
+form.availableHours .availableH li {
+    float: left;
+    padding: 0 15px;
+}
+form.availableHours .availableH li .checkbox input[type="checkbox"] {
+    margin-top: 2px;
+}
+#buyclass h4 {
+    font-size: 18px;
+}
+#buyclass div span {
+    display: block;
+    margin: 10px 0 0;
+}
+
+/* # Teacher Panel - General
+================================================== */
+#chooseBox {
+    background-color: #F7F7F7;
+    border-radius: 5px;
+    color: inherit;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+ul.list-number {
+    list-style-type: decimal;
+    padding-left: 30px;
+}
+.datepicker-embed {
+    float: left;
+    height: 250px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    width: 212px;
+}
+.datepicker-byhour {
+    float: left;
+    height: 250px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    width: 212px;
+}
+.datepicker-inline {
+    border-radius: 0 !important;
+    border: 1px solid #ccc;
+    padding: 0 !important;
+    width: 212px !important;
+}
+.dataTables_wrapper {
+    margin-bottom: 10px;
+}
+table.table-condensed {
+    background-color: #fff;
+}
+table.table-condensed thead tr:first-child {
+    border-bottom: 1px solid #ccc;
+}
+table.table-condensed thead tr:first-child th {
+    border-radius: 0 !important;
+}
+.datepicker table tbody tr td {
+    background-color: #E0E0E0;
+    border-radius: 0 !important;
+}
+.datepicker table tr td.active {
+    background-color: red !important;
+    border-color: red !important;
+    color: #ffffff;
+    font-weight: bold;
+}
+.datepicker table tr td.hasclass:not(.disabled),
+.datepicker table tr td.hasclass:not(.old),
+.datepicker table tr td.hasclass:not(.new) {
+    background-color: green;
+    border-color: green;
+    color: #ffffff;
+    font-weight: bold;
+}
+.datepicker table tr td.hasclass.new {
+    background-color: #E0E0E0 !important;
+    border-radius: 0 !important;
+    color: #999999 !important;
+}
+
+.chooseHours {
+    float: left;
+    position: relative;
+    width: 400px;
+}
+.chooseHours ul {
+    float: left;
+    width: 100px;
+}
+.chooseHours ul li {
+    margin-bottom: 0 !important;
+}
+.chooseHours ul li .checkbox {
+    margin: 0 !important;
+}
+.chooseHours .loader {
+    background-color: #000;
+    background-image: url(../images/spiffygif_48x48.gif);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: none;
+    height: 100%;
+    left: 0;
+    opacity: 0.5;
+    -ms-opacity: 0.5;
+    -moz-opacity: 0.5;
+    -wekit-opacity: 0.5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.legendColor {
+    float: left;
+}
+.legendColor > div {
+    float: left;
+    font-size: 11px;
+    margin-right: 10px;
+}
+.active span {
+    background-color: red;
+    float: left;
+    height: 14px;
+    margin-right: 5px;
+    width: 14px;
+}
+.oneclass span {
+    background-color: green;
+    float: left;
+    height: 14px;
+    margin-right: 5px;
+    width: 14px;
+}
+.noclass span {
+    background-color: #E0E0E0;
+    float: left;
+    height: 14px;
+    margin-right: 5px;
+    width: 14px;
+}
+table {
+    table-layout:fixed;
+}
+
+.dataTables_scrollHead table {
+    margin-bottom: 0;
+}
+div.dataTables_filter, div.dataTables_info, div.dataTables_length, div.dataTables_paginate {
+    display: none;
+}
+
+/* # Media Queries
+================================================== */
+
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {}
+
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    #menu h4#item-id {
+        font-size: 26px;
+    }
+    .container #menu.nine.columns {
+        width: 520px;
+    }
+    .container #menu.offset-by-five {
+        padding-left: 100px;
+    }
+    .container #menu .three.columns {
+        width: 160px;
+    }
+    #pager {
+        width: 748px;
+    }
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    #pager {
+        text-align: center;
+        width: 420px;
+    }
+    #pager a {
+        font-family: 'Bbold';
+        font-size: 16px;
+    }
+}
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {}
+
+
+/* # Font-Face
+================================================== */
+@font-face {
+    font-family: 'MyriadProSemibold';
+    src: url('fonts/MyriadPro/myriadpro-semibold-webfont.eot');
+    src: url('fonts/MyriadPro/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/MyriadPro/myriadpro-semibold-webfont.woff') format('woff'),
+         url('fonts/MyriadPro/myriadpro-semibold-webfont.ttf') format('truetype'),
+         url('fonts/MyriadPro/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MyriadProLight';
+    src: url('fonts/MyriadPro/myriadpro-light-webfont.eot');
+    src: url('fonts/MyriadPro/myriadpro-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/MyriadPro/myriadpro-light-webfont.woff') format('woff'),
+         url('fonts/MyriadPro/myriadpro-light-webfont.ttf') format('truetype'),
+         url('fonts/MyriadPro/myriadpro-light-webfont.svg#MyriadProLight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MyriadProRegular';
+    src: url('fonts/MyriadPro/myriadpro-regular-webfont.eot');
+    src: url('fonts/MyriadPro/myriadpro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/MyriadPro/myriadpro-regular-webfont.woff') format('woff'),
+         url('fonts/MyriadPro/myriadpro-regular-webfont.ttf') format('truetype'),
+         url('fonts/MyriadPro/myriadpro-regular-webfont.svg#MyriadProRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,0 +1,812 @@
+#reedwan-settings{
+    margin: 20px;
+    width: 960px;
+    background: url('../images/main_bg.png') repeat-y;
+    overflow: hidden;
+    border: 1px solid #c6c6c6;
+    position: relative;
+}
+
+#reedwan-sidebar{
+    width: 250px;
+    float:left;
+}
+
+.reedwan-hide{
+    display:none;
+}
+
+#reedwan-content{
+    line-height: 18px;
+    font-family: 'Arial', sans-serif;
+    color: #2b2b2b;
+    height: 100%;
+    font-weight: normal;
+    font-size: 12px;
+    padding: 20px;
+    width: 669px;
+    float:right;
+}
+
+#reedwan-content h4{
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#reedwan-meta-info{
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Forms */
+
+#reedwan-settings input, 
+.reedwan-image-checkbox,
+.reedwan-image-radio,
+.reedwan-button-blue, 
+.reedwan-button,
+#reedwan-settings textarea{
+    background: #ffffff;
+    border: 1px solid #c1c1c1;
+    border-bottom: 2px solid #c1c1c1;
+
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    padding: 8px 10px;
+    font-size: 12px;
+
+    color: #898989;
+    display: block;
+}
+
+#reedwan-settings select{
+    background: #ffffff;
+    border: 1px solid #c1c1c1;
+    border-bottom: 2px solid #c1c1c1;
+
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    height: 34px;
+    padding: 0 0 0 5px;
+    font-size: 12px;
+    min-width: 150px;
+
+    color: #898989;
+    display: block;
+}
+
+#reedwan-settings input.reedwan-color-picker{
+    width: 70px;
+    color: #f0f0f0;
+}
+
+#reedwan-settings textarea{
+    font-family: 'Arial', sans-serif;
+}
+
+#reedwan-settings input:focus, #reedwan-settings textarea:focus{
+    outline: none!important;
+    border: 1px solid #d3d3d3;
+    border-bottom: 2px solid #d3d3d3;
+}
+
+#reedwan-settings input[type="button"],
+#reedwan-settings input[type="submit"],
+.reedwan-button-blue, 
+.reedwan-button,
+#reedwan-settings input[type="reset"]{
+    display: inline;
+    padding: 7px 17px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+
+    font-size: 11px;
+}
+
+.reedwan-button,
+#reedwan-settings input[type="button"]{
+    color: #a9a9a9;
+    text-shadow: 0 1px 0 white;
+    background: rgb(245,245,245);
+
+
+    background-image: linear-gradient(bottom, rgb(245,245,245) 100%, rgb(237,237,237) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(245,245,245) 100%, rgb(237,237,237) 0%);
+    background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 100%, rgb(237,237,237) 0%);
+    background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 100%, rgb(237,237,237) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(245,245,245) 100%, rgb(237,237,237) 0%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(1, rgb(245,245,245)),
+        color-stop(0, rgb(237,237,237))
+        );
+
+    border: 1px solid #c0c0c0;
+
+    box-shadow: 0 1px 0 white inset;
+}
+
+.reedwan-button:active,
+#reedwan-settings input[type="button"]:active{
+    background-image: linear-gradient(bottom, rgb(245,245,245) 0%, rgb(237,237,237) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(245,245,245) 0%, rgb(237,237,237) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 0%, rgb(237,237,237) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 0%, rgb(237,237,237) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(245,245,245) 0%, rgb(237,237,237) 100%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(245,245,245)),
+        color-stop(1, rgb(237,237,237))
+        );
+
+    box-shadow: none;
+}
+.reedwan-button:hover,
+#reedwan-settings input[type="button"]:hover{
+    background-image: linear-gradient(bottom, rgb(242,242,242) 100%, rgb(235,235,235) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(242,242,242) 100%, rgb(235,235,235) 0%);
+    background-image: -moz-linear-gradient(bottom, rgb(242,242,242) 100%, rgb(235,235,235) 0%);
+    background-image: -webkit-linear-gradient(bottom, rgb(242,242,242) 100%, rgb(235,235,235) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(242,242,242) 100%, rgb(235,235,235) 0%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(1, rgb(242,242,242)),
+        color-stop(0, rgb(235,235,235))
+        );
+}
+
+#reedwan-settings input[type="submit"],
+.reedwan-button-blue, 
+#reedwan-settings input[type="reset"]{
+    color: white;
+    text-shadow: 0 1px 0 #24538b;
+    background: url('../images/buttonblue_bg.png');
+
+    border: 1px solid #477dae;
+
+    box-shadow: 0 1px 0 #93c1eb inset;
+}
+
+#reedwan-settings input[type="submit"]:hover,
+.reedwan-button-blue:hover, 
+#reedwan-settings input[type="reset"]:hover{
+    background: #558BBC;
+    box-shadow: 0 1px 0 #558BBC inset;
+}
+
+#reedwan-settings input[type="submit"]:active,
+.reedwan-button-blue:active, 
+#reedwan-settings input[type="reset"]:active{
+    background-image: linear-gradient(bottom, #679CCE 0%, #497EB0 100%);
+    background-image: -o-linear-gradient(bottom, #679CCE 0%, #497EB0 100%);
+    background-image: -moz-linear-gradient(bottom, #679CCE 0%, #497EB0 100%);
+    background-image: -webkit-linear-gradient(bottom, #679CCE 0%, #497EB0 100%);
+    background-image: -ms-linear-gradient(bottom, #679CCE 0%, #497EB0 100%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, #679CCE),
+        color-stop(1, #497EB0)
+        );
+
+    box-shadow: none;
+}
+
+/* Content */
+
+.save-button{
+    float: right;
+    display: inline;
+}
+
+.reedwan-settings-headline{
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #898989;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 0 1px 0 #f5f5f5;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    margin-top: 0;
+    border-bottom: 1px solid #c0c0c0;
+    overflow: hidden;
+}
+
+#reedwan-content h2{
+    display: inline;
+    float: left;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #898989;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 0 1px 0 #f5f5f5;
+    padding-bottom: 5px;
+    margin-bottom: 0;
+}
+
+
+#reedwan-meta-info h1{
+    font-family: 'Droid Sans', sans-serif;
+    color: #ffffff;
+    font-weight: normal;
+    font-size: 16px;
+    text-shadow: 0 1px 0 #2b2b2b;  
+    margin-top: 0;
+}
+
+
+#reedwan-meta-info h2{
+    font-family: 'Droid Sans', sans-serif;
+    color: #898989;
+    font-weight: normal;
+    font-size: 10px;
+    text-shadow: 0 1px 0 #2b2b2b;  
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+#reedwan-content label{
+    width: 230px;
+    font-size: 12px;
+    color: #535356;
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 0 1px 0 #f5f5f5;
+}
+
+#reedwan-content input[type="radio"], #reedwan-content input[type="checkbox"]{
+    display: inline-block;
+}
+
+.reedwan-fullwidth{
+    width: 389px;
+}
+
+.separator{
+    border-bottom: 1px solid #d6d6d6;
+    border-top: 1px solid #f5f5f5;
+    margin-bottom: 0;
+    padding-top: 20px;
+    overflow: hidden;
+    margin: 0 10px;
+}
+
+.separator:nth-last-child(1){
+    border: none;
+    border-top: 1px solid #f5f5f5;
+}
+
+.separator:nth-child(2){
+    margin-bottom: 0;
+    border: none;
+    border-bottom: 1px solid #d6d6d6;
+    padding-top: 0;
+}
+
+#reedwan-content .label{
+    width: 209px;
+    height: 100%;
+    float: left;
+
+}
+
+#reedwan-content .description{
+    font-style: italic;
+    margin-top: 5px;
+    margin-left: 3px;
+    margin-bottom: 20px;
+    color: #898989;
+}
+
+/* Main Menu */
+
+#reedwan-main-menu p{
+    margin: 0;
+}
+
+#reedwan-main-menu{
+    list-style: none;
+    font-family: 'Arial', serif;
+    color: #f5f5f8;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: 0 1px 0 #2b2b2b;  
+    margin: 0;
+    padding: 0; 
+    border: 1px solid #252525;
+}
+
+#reedwan-main-menu li{
+    margin-bottom: 0;
+}
+
+#reedwan-main-menu p{
+    line-height: 45px;
+    cursor: pointer;
+}
+
+.settings-content{
+    float: right;
+    width: 440px;
+}
+
+#reedwan-main-menu > li p{
+    background: url('../images/top_men_bg.png');  
+    border-top: 1px solid #535356;
+    border-bottom: 1px solid #252525;
+    padding-left: 50px;
+    position: relative;
+}
+
+#reedwan-main-menu > li:nth-last-child(1) > p{
+    border-bottom: none;
+}
+
+#reedwan-main-menu li p:hover{
+    box-shadow: 0 0 25px #2a2a2a inset;
+    border-top: 1px solid #2a2a2a;
+}
+
+#reedwan-main-menu li p:active{
+    box-shadow: 0 0 25px #121212 inset;
+    border-top: 1px solid #121212;
+}
+
+#reedwan-main-menu a{
+    text-decoration: none;
+    color: #f5f5f8;
+    text-shadow: 0 1px 0 #2b2b2b;  
+}
+
+#reedwan-main-menu > li > ul{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: none;
+}
+
+.reedwan_image_preview img{
+    max-width: 380px;
+    margin: 5px 3px 0;
+    padding: 2px;
+    background: white;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    
+    
+    background: #ffffff;
+    border: 1px solid #c1c1c1;
+    border-bottom: 2px solid #c1c1c1;
+}
+
+.reedwan_image_preview img:hover{
+    border: 1px solid #d3d3d3;
+    border-bottom: 2px solid #d3d3d3;
+}
+
+#reedwan-main-menu > li > ul li p:hover{
+    box-shadow: 0 0 25px #191919 inset;
+    border-top: 1px solid #191919;
+}
+
+#reedwan-main-menu > li > ul li p:active{
+    box-shadow: 0 0 25px #121212 inset;
+    border-top: 1px solid #121212;
+}
+
+#reedwan-main-menu > li > ul li p{
+    background: #2d2d2d;
+    border-bottom: 1px solid #252525;
+    border-top: 1px solid #2d2d2d;
+    padding-left: 25px;
+    position: relative;
+}
+
+#reedwan-main-menu > li > ul li:nth-last-child(1) p{
+    border-bottom: none;
+}
+
+#reedwan-main-menu > li > ul li p:after{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    content: ' ';
+    background: url('../images/arrow.png');
+    width: 9px;
+    height: 15px;
+}
+
+
+.reedwan-button-blue, .reedwan-button{
+    margin: 5px 2px;
+    line-height: 40px;
+}
+
+.reedwan-image-radio,
+.reedwan-image-checkbox{
+    margin: 5px;
+    padding: 5px 5px 0;
+    float: left;
+    text-align: center;
+    width: auto !important;
+}
+
+.cOf{
+    overflow: hidden;
+    display: block;
+}
+
+.reedwan-img-selected{
+    background: #558bbc;
+    border: 1px solid #c1c1c1;
+    border-bottom: 2px solid #c1c1c1;
+    color: white !important;
+    text-shadow: none !important;
+}
+
+.reedwan-image-radio p,
+.reedwan-image-checkbox p{
+    margin: 0;
+}
+
+.centerInfo h4{
+    font-size: 12px!important;
+    font-weight: normal;
+    color: #535356;
+    text-align: center;
+    margin-top: 5px !important;
+    margin-bottom: 0 !important;
+    font-style: italic;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 0 1px 0 #f5f5f5;
+}
+
+.centerInfo img{
+    text-align: center;
+    margin: 0 auto;
+    width: 300px;
+}
+
+.centerInfo {
+    width: 300px;
+    margin: 50px auto;
+}
+
+
+.reedwan-image-radio-b,
+.reedwan-image-checkbox-b{
+    background: black;
+    display: none !important;
+}
+
+
+#reedwan-main-menu > li span{
+    position: absolute;
+    left: 0;
+    top: 14px;
+    left: 25px;
+    width: 16px;
+    height: 16px;
+}
+
+.logo_reedwan{
+    width: 89px !important;
+    margin-bottom: 10px;
+    margin-left: 104px !important;
+}
+
+
+
+
+
+
+/* icons */
+
+
+.reedwan-icon-home{ 
+    background: url('../images/icons/user-home.png');
+}
+
+.reedwan-icon-star{
+    background: url('../images/icons/user-bookmarks.png');
+}
+
+.reedwan-icon-down{ 
+    background: url('../images/icons/go-down.png');
+}
+
+.reedwan-icon-next{ 
+    background: url('../images/icons/go-next.png');
+}
+
+.reedwan-icon-previous{ 
+    background: url('../images/icons/go-previous.png');
+}
+
+.reedwan-icon-up{ 
+    background: url('../images/icons/go-up.png');
+}
+
+.reedwan-icon-voldown{ 
+    background: url('../images/icons/audio-volume-low.png');
+}
+
+.reedwan-icon-volmedium{
+    background: url('../images/icons/audio-volume-medium.png');
+}
+
+.reedwan-icon-volmuted{ 
+    background: url('../images/icons/audio-volume-muted.png');
+}
+
+.reedwan-icon-close{ 
+    background: url('../images/icons/close.png');
+}
+
+.reedwan-icon-warning{ 
+    background: url('../images/icons/dialog-warning.png');
+}
+
+.reedwan-icon-circlecheck{ 
+    background: url('../images/icons/emblem-default.png');
+}
+
+.reedwan-icon-dup{
+    background: url('../images/icons/direction-top.png');
+}
+
+.reedwan-icon-ddown{ 
+    background: url('../images/icons/direction-bottom.png');
+}
+
+.reedwan-icon-dleft{ 
+    background: url('../images/icons/direction-left.png');
+}
+
+.reedwan-icon-dright{ 
+    background: url('../images/icons/direction-right.png');
+}
+
+.reedwan-icon-download{ 
+    background: url('../images/icons/emblem-downloads.png');
+}
+
+.reedwan-icon-emblem-shared{ 
+    background: url('../images/icons/emblem-shared.png');
+}
+
+.reedwan-icon-folder{ 
+    background: url('../images/icons/folder.png');
+}
+
+.reedwan-icon-group-chat{ 
+    background: url('../images/icons/internet-group-chat.png');
+}
+
+.reedwan-icon-mail{ 
+    background: url('../images/icons/internet-mail.png');
+}
+
+.reedwan-icon-list-add{ 
+    background: url('../images/icons/list-add.png');
+}
+
+.reedwan-icon-calendar{ 
+    background: url('../images/icons/office-calendar.png');
+}
+
+.reedwan-icon-list-remove{ 
+    background: url('../images/icons/list-remove.png');
+}
+
+.reedwan-icon-readonly{ 
+    background: url('../images/icons/emblem-readonly.png');
+}
+
+.reedwan-icon-unreadable{ 
+    background: url('../images/icons/emblem-unreadable.png');
+}
+
+.reedwan-icon-texteditor{ 
+    background: url('../images/icons/accessories-text-editor.png');
+}
+
+.reedwan-icon-list{ 
+    background: url('../images/icons/list.png');
+}
+
+.reedwan-icon-playback-start{ 
+    background: url('../images/icons/media-playback-start.png');
+}
+
+.reedwan-icon-playback-pause{ 
+    background: url('../images/icons/media-playback-pause.png');
+}
+
+.reedwan-icon-playback-stop{ 
+    background: url('../images/icons/media-playback-stop.png');
+}
+
+.reedwan-icon-record{ 
+    background: url('../images/icons/media-record.png');
+}
+
+.reedwan-icon-grid{ 
+    background: url('../images/icons/grid.png');
+}
+
+.reedwan-icon-start-here{ 
+    background: url('../images/icons/start-here.png');
+}
+
+.reedwan-icon-search{ 
+    background: url('../images/icons/system-search.png');
+}
+
+.reedwan-icon-person{ 
+    background: url('../images/icons/person.png');
+}
+
+.reedwan-icon-tag{ 
+    background: url('../images/icons/tag.png');
+}
+
+.reedwan-icon-time{ 
+    background: url('../images/icons/time.png');
+}
+
+.reedwan-icon-trash{ 
+    background: url('../images/icons/user-trash.png');
+}
+
+.reedwan-icon-window{ 
+    background: url('../images/icons/window.png');
+}
+
+.reedwan-icon-upload{ 
+    background: url('../images/icons/upload.png');
+}
+
+.reedwan-icon-recycle{ 
+    background: url('../images/icons/recycle.png');
+}
+
+.reedwan-icon-font{ 
+    background: url('../images/icons/font.png');
+}
+
+.reedwan-icon-trash-full{ 
+    background: url('../images/icons/trash-full.png');
+}
+
+.reedwan-icon-desktop{ 
+    background: url('../images/icons/user-desktop.png');
+}
+
+.reedwan-icon-refresh{ 
+    background: url('../images/icons/view-refresh.png');
+}
+
+.reedwan-icon-recycle-full{ 
+    background: url('../images/icons/recycle-filled.png');
+}
+
+.reedwan-icon-info{ 
+    background: url('../images/icons/dialog-information.png');
+}
+
+.reedwan-icon-text-file{ 
+    background: url('../images/icons/text-x-generic.png');
+}
+
+.reedwan-icon-favorite{ 
+    background: url('../images/icons/emblem-favorite.png');
+}
+
+.reedwan-icon-volume-high{ 
+    background: url('../images/icons/audio-volume-high.png');
+}
+
+.reedwan-icon-audio{ 
+    background: url('../images/icons/audio-x-generic.png');
+}
+
+.reedwan-icon-users{ 
+    background: url('../images/icons/system-users.png');
+}
+
+.reedwan-icon-dialog-error{ 
+    background: url('../images/icons/dialog-error.png');
+}
+
+.reedwan-icon-important{ 
+    background: url('../images/icons/emblem-important.png');
+}
+
+.reedwan-icon-calendar12{ 
+    background: url('../images/icons/x-office-calendar.png');
+}
+
+.reedwan-icon-drawing{ 
+    background: url('../images/icons/x-office-drawing.png');
+}
+
+.reedwan-icon-office-document{ 
+    background: url('../images/icons/x-office-document.png');
+}
+
+.reedwan-icon-presentation{ 
+    background: url('../images/icons/x-office-presentation.png');
+}
+
+.reedwan-icon-spreadsheet{ 
+    background: url('../images/icons/x-office-spreadsheet.png');
+}
+
+.reedwan-icon-video{ 
+    background: url('../images/icons/video-x-generic.png');
+}
+
+.reedwan-icon-fullscreen{ 
+    background: url('../images/icons/view-fullscreen.png');
+}
+
+.reedwan-icon-folder-search{ 
+    background: url('../images/icons/folder-saved-search.png');
+}
+
+.reedwan-icon-empty-file{ 
+    background: url('../images/icons/text-x-generic-template.png');
+}
+
+.reedwan-icon-script{ 
+    background: url('../images/icons/text-x-script.png');
+}
+
+.reedwan-icon-preference{ 
+    background: url('../images/icons/preferences-system.png');
+}
+
+.reedwan-icon-address{ 
+    background: url('../images/icons/x-office-address-book.png');
+}
+
+.reedwan-icon-image{ 
+    background: url('../images/icons/image-x-generic.png');
+}
+
+.reedwan-icon-rss{ 
+    background: url('../images/icons/internet-news-reader.png');
+}
+
+.reedwan-icon-application{ 
+    background: url('../images/icons/application-x-executable.png');
+}
+
+.reedwan-icon-package{ 
+    background: url('../images/icons/package-x-generic.png');
+}
+
+.reedwan-icon-utilities{ 
+    background: url('../images/icons/utilities-system-monitor.png');
+}
+
+
