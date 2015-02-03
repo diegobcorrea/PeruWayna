@@ -45,67 +45,73 @@ get_header(); ?>
 						</ul>
 					</div>
 					<div class="col-md-8">
-						<div class="datepicker-embed"><div id="choosePicker"></div></div>
-						<?php 
+						<div class="wrapper-loader">
+							<div class="loader"></div>
+							<div class="datepicker-embed">
+								<div id="choosePicker"></div>
+							</div>
+							<?php 
 
-						$h = "5";
-						$hm = $h * 60; 
-						$ms = $hm * 60;
+							$h = "5";
+							$hm = $h * 60; 
+							$ms = $hm * 60;
 
-						$time = date('h:i A',time()-($ms));
+							$time = date('h:i A',time()-($ms));
 
-						?>
-						<form class="chooseHours">
-							<ul>
-								<?php 
+							?>
+							<form class="chooseHours">
+								<ul>
+									<?php 
 
-								$hour_1 = '12:00 AM';
+									$hour_1 = '12:00 AM';
 
-								for ($i = 0; $i < 12; $i++) : ?>
-								<li>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" value="<?php echo $hour_1; ?>"> <?php echo $hour_1; ?>
-										</label>
-									</div>
-								</li>
-								<?php $hour_1 = date("h:i A", strtotime('+30 minutes', strtotime($hour_1) ) ); endfor; ?>
-							</ul>
-							<ul>
-								<?php 
+									for ($i = 0; $i < 12; $i++) : ?>
+									<li>
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" value="<?php echo $hour_1; ?>"> <?php echo $hour_1; ?>
+											</label>
+										</div>
+									</li>
+									<?php $hour_1 = date("h:i A", strtotime('+30 minutes', strtotime($hour_1) ) ); endfor; ?>
+								</ul>
+								<ul>
+									<?php 
 
-								$hour_2 = '06:00 AM';
+									$hour_2 = '06:00 AM';
 
-								for ($i = 0; $i < 12; $i++) : ?>
-									<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_2; ?>"> <?php echo $hour_2; ?></label></div></li>
-								<?php $hour_2 = date("h:i A", strtotime('+30 minutes', strtotime($hour_2) ) ); endfor; ?>
-							</ul>
-							<ul>
-								<?php 
+									for ($i = 0; $i < 12; $i++) : ?>
+										<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_2; ?>"> <?php echo $hour_2; ?></label></div></li>
+									<?php $hour_2 = date("h:i A", strtotime('+30 minutes', strtotime($hour_2) ) ); endfor; ?>
+								</ul>
+								<ul>
+									<?php 
 
-								$hour_3 = '12:00 PM';
+									$hour_3 = '12:00 PM';
 
-								for ($i = 0; $i < 12; $i++) : ?>
-									<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_3; ?>"> <?php echo $hour_3; ?></label></div></li>
-								<?php $hour_3 = date("h:i A", strtotime('+30 minutes', strtotime($hour_3) ) ); endfor; ?>
-							</ul>
-							<ul>
-								<?php 
+									for ($i = 0; $i < 12; $i++) : ?>
+										<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_3; ?>"> <?php echo $hour_3; ?></label></div></li>
+									<?php $hour_3 = date("h:i A", strtotime('+30 minutes', strtotime($hour_3) ) ); endfor; ?>
+								</ul>
+								<ul>
+									<?php 
 
-								$hour_4 = '06:00 PM';
+									$hour_4 = '06:00 PM';
 
-								for ($i = 0; $i < 12; $i++) : ?>
-									<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_4; ?>"> <?php echo $hour_4; ?></label></div></li>
-								<?php $hour_4 = date("h:i A", strtotime('+30 minutes', strtotime($hour_4) ) ); endfor; ?>
-							</ul>
-							<input type="hidden" id="chooseDate" name="chooseDate">
-							<input type="hidden" id="id_teacher" name="id_teacher" value="<?php echo $teacher->id_teacher; ?>">
-						</form>
+									for ($i = 0; $i < 12; $i++) : ?>
+										<li><div class="checkbox"><label><input type="checkbox" value="<?php echo $hour_4; ?>"> <?php echo $hour_4; ?></label></div></li>
+									<?php $hour_4 = date("h:i A", strtotime('+30 minutes', strtotime($hour_4) ) ); endfor; ?>
+								</ul>
+								<input type="hidden" id="chooseDate" name="chooseDate">
+								<input type="hidden" id="id_teacher" name="id_teacher" value="<?php echo $teacher->id_teacher; ?>">
+							</form>
+						</div>
 						<div class="legendColor">
 							<div class="active"><span></span>Seleccionado</div>
 							<div class="oneclass"><span></span>Días con al menos un horario de clases</div>
 							<div class="noclass"><span></span>Días sin ningún horario de clases</div>
 						</div>
+
 					</div>
 				</div>
 

@@ -432,6 +432,7 @@ function fetchFreeDays(year, month, id_teacher) {
                 var nowTime = moment().utcOffset(-5).format('x');
                 var nowNow = moment().utcOffset(-5).format('MM-DD-YYYY');
 
+                jq(".loader").show();
                 jq('#chooseDate').val(e.format('yyyy-mm-dd'));
                 jq('form.chooseHours').fadeIn(1000);
                 jq('.checkbox input[type=checkbox]').prop('disabled', false).prop('checked', false);
@@ -461,7 +462,11 @@ function fetchFreeDays(year, month, id_teacher) {
                         date: jq('#chooseDate').val(),
                         teacher: jq('#id_teacher').val(),
                     },
-                    success: function(data, textStatus, XMLHttpRequest) {       
+                    success: function(data, textStatus, XMLHttpRequest) {     
+                        setTimeout(function() {
+                            jq(".loader").hide();
+                        }, 500);
+                          
                         var arr = jq.parseJSON(data);
 
                         jq.each( arr, function( i, val ) {

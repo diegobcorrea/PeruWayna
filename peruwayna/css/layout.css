@@ -413,6 +413,7 @@ table.table-condensed thead tr:first-child th {
     position: absolute;
     top: 0;
     width: 100%;
+    z-index: 9;
 }
 
 .legendColor {
@@ -465,6 +466,13 @@ a.btn {
 a#sendPassOk {
     display: inline;
     margin: 0 135px;
+}
+.wrapper-loader {
+    height: 243px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
 }
 
 /* # Media Queries
