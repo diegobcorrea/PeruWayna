@@ -35,9 +35,9 @@ get_header(); ?>
 				</div>
 				<div class="col-md-8">
 					<div class="form-group">
-						<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Inicio</label>
+						<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Límite</label>
 						<div class="col-sm-8">
-							<div id="notstart" class="input-group date" data-date-format="mm-dd-yyyy">
+							<div id="endToday" class="input-group date" data-date-format="mm-dd-yyyy">
 								<input type="text" class="form-control" id="inputDateEnd" name="dateend" required>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 							</div>
@@ -53,12 +53,18 @@ get_header(); ?>
 		<div class="col-md-12">
 			<script type="text/javascript">
 			jq(document).ready(function() {
-			    jq('#table-seeFreehours').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ], "columnDefs": [
-	            {
-	                "targets": [ 0 ],
-	                "visible": false,
-	                "searchable": false
-	            } ] });
+			    jq('#table-seeFreehours').dataTable( { 
+			    	paging: false, 
+			    	searching: false, 
+			    	"scrollY": "507px", 
+			    	"scrollCollapse": true, 
+			    	"order": [ [0,"desc"] ], 
+			    	"columnDefs": [{
+		                "targets": [ 0 ],
+		                "visible": false,
+		                "searchable": false
+		            }] 
+		        });
 
 			    var body_height = parseInt(jq('#table-seeFreehours_wrapper .dataTables_scrollBody').height());
 
@@ -86,24 +92,21 @@ get_header(); ?>
 				<div class="col-md-12 add-bottom">
 					<div class="col-md-12">
 						<div class="form-group">
-							<label for="inputName" class="col-md-6 control-label text-right">Nombre</label>
-							<div class="col-md-6">
-								<input type="text" class="form-control" id="inputName" name="name" required>
+							<label for="inputName" class="col-md-4 control-label text-right">Nombre</label>
+							<div class="col-md-8">
+								<?php $getStudents = $wpdb->get_results( "SELECT * FROM wp_bs_student", OBJECT ); ?>
+								<select name="id_student" id="inputIDstudent">
+								<?php foreach ($getStudents as $student) : ?>
+									<option value="<?php echo $student->id_student; ?>"><?php echo $student->name_student ?> <?php echo $student->lastname_student ?></option>
+								<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-12">
 						<div class="form-group">
-							<label for="inputLastname" class="col-md-6 control-label text-right">Apellido</label>
-							<div class="col-md-6">
-								<input type="text" class="form-control" id="inputLastname" name="lastname" required>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12">
-						<div class="form-group">
-							<label for="inputMinutes" class="col-md-6 control-label text-right">Minutos (Horas x 60)</label>
-							<div class="col-md-6">
+							<label for="inputMinutes" class="col-md-4 control-label text-right">Minutos (Horas x 60)</label>
+							<div class="col-md-8">
 								<input type="text" class="form-control" id="inputMinutes" name="minutes" required>
 							</div>
 						</div>

@@ -141,6 +141,11 @@ jq(document).ready( function() {
         pickTime: true
     });
 
+    jq('#endToday.input-group.date').datepicker({
+        endDate: today,
+        pickTime: true
+    });
+
     jq('#registerStudent').validate({
         rules: {
             name: "required",

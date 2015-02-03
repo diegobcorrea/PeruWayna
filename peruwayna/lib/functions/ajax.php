@@ -1152,12 +1152,12 @@ function admin_allclassesHours_callback() {
                 $teacherName = ' - ';
             }
 
-            $getWT['day'][$getDay]['date'] = $date;
-            $getWT['day'][$getDay]['start_class'] = $value->start_class;
-            $getWT['day'][$getDay]['end_class'] = $value->end_class;
-            $getWT['day'][$getDay]['teacher_name'] = $teacherName;
-            $getWT['day'][$getDay]['student_name'] = $studentName;
-            $getWT['day'][$getDay]['status'] = $value->status;
+            $getWT[$getDay]['date'] = $date;
+            $getWT[$getDay]['start_class'] = $value->start_class;
+            $getWT[$getDay]['end_class'] = $value->end_class;
+            $getWT[$getDay]['teacher_name'] = $teacherName;
+            $getWT[$getDay]['student_name'] = $studentName;
+            $getWT[$getDay]['status'] = $value->status;
         endforeach;     
 
         $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
@@ -1177,6 +1177,9 @@ function admin_allclassesHours_callback() {
         $getWT['complete'] = $complete;
 
         $results = json_encode($getWT); 
+    }
+    else {
+        $results = "fail";
     }
 
     // Return the String
@@ -1208,7 +1211,7 @@ function admin_seeFreeHours_callback() {
                 $studentName = ' - ';
             }
 
-            $getWT['day'][$getDay]['date'] = $value->date_class;
+            $getWT['day'][$getDay]['date'] = dateViewFormat($value->date_class);
             $getWT['day'][$getDay]['student_name'] = $studentName;
             $getWT['day'][$getDay]['freetime'] = m2h($value->free_time);
         endforeach;      
@@ -1224,12 +1227,11 @@ function admin_giveFreeHours_callback() {
     global $wpdb;
      
     $results    = '';
-    $name       = $_POST['name_student'];
-    $lastname   = $_POST['lastname_student'];
+    $idstudent  = $_POST['idstudent'];
     $minutes    = $_POST['minutes'];
-    $today      = date('m-d-Y',time()-($ms));
+    $today      = date('Y-m-d',time()-($ms));
 
-    $student = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE name_student = '$name' AND lastname_student = '$lastname'", OBJECT );
+    $student = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = '$idstudent'", OBJECT );
 
     if($student):
         $id_student = $student->id_student;

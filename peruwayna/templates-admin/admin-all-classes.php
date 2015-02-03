@@ -27,7 +27,7 @@ get_header(); ?>
 					<div class="form-group">
 						<label for="inputDateStart" class="col-sm-4 control-label text-right">Fecha Inicio</label>
 						<div class="col-sm-8">
-							<div id="notstart" class="input-group date" data-date-format="mm-dd-yyyy">
+							<div id="endToday" class="input-group date" data-date-format="mm-dd-yyyy">
 								<input type="text" class="form-control" id="inputDateStart" name="datestart" required>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 							</div>
@@ -38,7 +38,7 @@ get_header(); ?>
 					<div class="form-group">
 						<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Final</label>
 						<div class="col-sm-8">
-							<div id="notstart" class="input-group date" data-date-format="mm-dd-yyyy">
+							<div id="endToday" class="input-group date" data-date-format="mm-dd-yyyy">
 								<input type="text" class="form-control" id="inputDateEnd" name="dateend" required>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 							</div>

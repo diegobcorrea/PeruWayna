@@ -712,6 +712,10 @@ jq(document).ready(function() {
 	jq('#allclasses-historic').click( function(e){
     	e.preventDefault();
 
+    	var btn = jq(this);
+
+		btn.val('Cargando..');
+
     	var startDate = jq('#inputDateStart').val();
 		var endDate = jq('#inputDateEnd').val();
 
@@ -723,66 +727,76 @@ jq(document).ready(function() {
 				startDate: startDate,
 				endDate: endDate,
 			},
-			success: function(data, textStatus, XMLHttpRequest) {		
-				var arr = jq.parseJSON(data);
-				var dataTable = jq('#allclasses').dataTable();
+			success: function(data, textStatus, XMLHttpRequest) {
+				console.log(data);
+				
 
-				dataTable.fnClearTable();
+				if(data == 'fail'){
+					btn.val('Error..');
 
-				jq.each(arr['day'], function(index, value) {
-					dataTable.fnAddData([
-				        index,
-				        value['date'],
-				        value['start_class'],
-				        value['end_class'],
-				        value['teacher_name'],
-				        value['student_name'],
-				        value['status'],
-				    ]);
-                });
+					setInterval(function() {
+						btn.val('Consultar');
+					}, 2500);
+				}
+				else{
+					var arr = jq.parseJSON(data);
+					var dataTable = jq('#allclasses').dataTable();
 
-				jq('#allclasses td').each(function() {
-                    jq(this).addClass('text-center');
-                });
-                jq('#allclasses tr td:nth-child(6)').each(function() {
-                	if( jq(this).text() == 'COMPLETADA' ){
-                		jq(this).addClass('confirm');
-                	}
-                	else if( jq(this).text() == 'CONFIRMADA' ){
-                		jq(this).addClass('confirm');
-                	}
-                	else if( jq(this).text() == 'DISPONIBLE' ){
-                		jq(this).addClass('confirm');
-                	}
-                	else if( jq(this).text() == 'ALUMNO FALTÓ' ){
-                		jq(this).addClass('miss');
-                	}
-                	else if( jq(this).text() == 'SUSPENDIDA' ){
-                		jq(this).addClass('cancel');
-                	}
-                	else if( jq(this).text() == 'SUSPENDIDA SIN ALUMNO' ){
-                		jq(this).addClass('cancel');
-                	}
-                	else if( jq(this).text() == 'CANCELADA -' ){
-                		jq(this).addClass('cancel');
-                	}
-                	else if( jq(this).text() == 'CANCELADA +' ){
-                		jq(this).addClass('cancel');
-                	}
-                });
+					dataTable.fnClearTable();
 
-				setInterval(function() {
-		            jq('#table-hours').slideDown(1000);
-		        }, 500);
+					jq.each(arr['day'], function(index, value) {
+						dataTable.fnAddData([
+					        index,
+					        value['date'],
+					        value['start_class'],
+					        value['end_class'],
+					        value['teacher_name'],
+					        value['student_name'],
+					        value['status'],
+					    ]);
+	                });
 
-                jq('#cancelminus').val(arr['cancelminus']);
-                jq('#cancelplus').val(arr['cancelplus']);
-                jq('#suspend').val(arr['suspend']);
-                jq('#suspendwos').val(arr['suspendwos']);
-                jq('#nocomplete').val(arr['nocomplete']);
-                jq('#complete').val(arr['complete']);
+					jq('#allclasses td').each(function() {
+	                    jq(this).addClass('text-center');
+	                });
+	                jq('#allclasses tr td:nth-child(6)').each(function() {
+	                	if( jq(this).text() == 'COMPLETADA' ){
+	                		jq(this).addClass('confirm');
+	                	}
+	                	else if( jq(this).text() == 'CONFIRMADA' ){
+	                		jq(this).addClass('confirm');
+	                	}
+	                	else if( jq(this).text() == 'DISPONIBLE' ){
+	                		jq(this).addClass('confirm');
+	                	}
+	                	else if( jq(this).text() == 'ALUMNO FALTÓ' ){
+	                		jq(this).addClass('miss');
+	                	}
+	                	else if( jq(this).text() == 'SUSPENDIDA' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                	else if( jq(this).text() == 'SUSPENDIDA SIN ALUMNO' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                	else if( jq(this).text() == 'CANCELADA -' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                	else if( jq(this).text() == 'CANCELADA +' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                });
 
-                // console.log(arr);
+					setInterval(function() {
+			            jq('#table-hours').slideDown(1000);
+			        }, 500);
+
+	                jq('#cancelminus').val(arr['cancelminus']);
+	                jq('#cancelplus').val(arr['cancelplus']);
+	                jq('#suspend').val(arr['suspend']);
+	                jq('#suspendwos').val(arr['suspendwos']);
+	                jq('#nocomplete').val(arr['nocomplete']);
+	                jq('#complete').val(arr['complete']);
+                }
                 
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
@@ -836,8 +850,7 @@ jq(document).ready(function() {
 	jq('#giveFreeHours').click( function(e){
     	e.preventDefault();
 
-    	var name = jq('#GiveHoursForm #inputName').val();
-		var lastname = jq('#GiveHoursForm #inputLastname').val();
+    	var idstudent = jq('#GiveHoursForm #inputIDstudent').val();
 		var minutes = jq('#GiveHoursForm #inputMinutes').val();
 
 		jq.ajax({
@@ -845,8 +858,7 @@ jq(document).ready(function() {
 			url: apfajax.ajaxurl,
 			data: {
 			    action: 'admin_giveFreeHours',
-				name_student: name,
-				lastname_student: lastname,
+				idstudent: idstudent,
 				minutes: minutes,
 			},
 			success: function(data, textStatus, XMLHttpRequest) {		
