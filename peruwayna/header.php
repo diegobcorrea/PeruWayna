@@ -65,6 +65,8 @@ session_start();
 	<?php endif; ?>
 
 	<script type="text/javascript">
+		var return_home = "<?php echo get_site_url() ?>/sistema-de-reservas/";
+		var close_session = "<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion";
 		var url_rel = "<?php echo get_template_directory_uri(); ?>";
 	</script>
 	

@@ -114,6 +114,10 @@ get_header(); ?>
 						Si marcó una de las horas por equivocación puede cancelarla en la página de <a href="#">mi programa de clases</a>.</p>
 				</div>
 			</div>
+
+			<script type="text/javascript">
+				var id_teacher = <?php echo $teacher->id_teacher; ?>
+			</script>
 		</div>
 	<?php else : ?>
 		<div class="panel panel-teacher-primary text-right">

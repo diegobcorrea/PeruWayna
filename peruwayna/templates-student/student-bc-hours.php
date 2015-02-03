@@ -17,17 +17,12 @@ get_header(); ?>
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						Menu Principal <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/">Inicio</a></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/mi-perfil?action=edit">Mi Perfil</a></li>
-						<li class="divider"></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion">Cerrar Sesión</a></li>
-					</ul>
+					<?php include( TEMPLATEPATH . '/templates-student/student-menu.php'); ?>
 				</div>
 			</div>
 		</div>
 
-		<div id="booking-class" class="row step-one">
+		<div id="booking-byhour" class="row step-one">
 			<div class="header-message">
 				<div class="title-tiny color gray text-center">PASO 1: Seleccionar mis días y horarios de clases</div>
 				<p class="text-center">Por favor considere reservar sus clases con anticipación con el fin de asegurar disponibilidad en el horario que esta buscando.<br/>
@@ -47,7 +42,10 @@ get_header(); ?>
 					</ul>
 				</div>
 				<div class="col-md-8">
-					<div class="datepicker-byhour"><div id="choosePicker"></div></div>
+					<div class="datepicker-byhour">
+						<div id="choosePicker"></div>
+						<div class="loader"></div>
+					</div>
 					<form class="chooseHours" style="height: 243px; border: 1px solid #ccc; padding: 10px;">
 						<div class="loader"></div>
 						<div class="availableH"></div>
@@ -65,8 +63,8 @@ get_header(); ?>
 
 			<div id="teacher-info" class="col-md-8 add-bottom col-md-push-2">
 				<script type="text/javascript">
-		        jq(document).ready(function() {
-		            jq('#selected-hours').dataTable( {
+		        jQuery(document).ready(function() {
+		            jQuery('#selected-hours').dataTable( {
 		                "scrollY":        "350px",
 		                "scrollCollapse": true,
 		                "paging":         false,
@@ -76,9 +74,9 @@ get_header(); ?>
 						}
 		            } );
 
-		            var body_height = parseInt(jq('#selected-hours_wrapper .dataTables_scrollBody').height());
+		            var body_height = parseInt(jQuery('#selected-hours_wrapper .dataTables_scrollBody').height());
 
-		            jq('#selected-hours_wrapper .dataTables_scrollBody').height(body_height + 30);
+		            jQuery('#selected-hours_wrapper .dataTables_scrollBody').height(body_height + 30);
 		        } );
 		        </script>
 		        <table id="selected-hours" class="table table-striped table-bordered">

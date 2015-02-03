@@ -289,13 +289,28 @@ jq(document).ready( function() {
 
         if(ev.target.className == 'next'){
             classesByTeacher(year, month);
-
-            console.log(teacherDays);
         }
         else if(ev.target.className == 'prev'){
             classesByTeacher(year, month);
+        }
 
-            console.log(teacherDays);
+    });
+
+    jq(document).on('click', '#booking-byhour .datepicker th.prev, #booking-byhour .datepicker th.next', function (ev) {
+        month = jq('.datepicker-days thead th.datepicker-switch').text();
+        month = month.substring(0,month.length - 5);
+        year = nowDate.getFullYear();
+
+        hoursDays = [];
+
+        jq('form.chooseHours').fadeOut(1000);
+        jq(".loader").show();
+
+        if(ev.target.className == 'next'){
+            classesByHour(year, month);
+        }
+        else if(ev.target.className == 'prev'){
+            classesByHour(year, month);
         }
     });
 
@@ -386,7 +401,7 @@ function getMonthFromString(mon){
     return -1;
 }
 
-function fetchFreeDays(year, month) {
+function fetchFreeDays(year, month, id_teacher) {
 
     jq.ajax({
         type: 'POST',         
@@ -394,6 +409,7 @@ function fetchFreeDays(year, month) {
         data: {
             action: 'fetchFreeDays',
             month: month,
+            id_teacher: id_teacher    
         },
         success: function(data, textStatus, XMLHttpRequest) {       
             if(data != ''){
@@ -408,7 +424,10 @@ function fetchFreeDays(year, month) {
                 startDate: today,
                 endDate: endDate,
             }).on('changeDate', function(e){
-                jq('#chooseDate').val(e.format('mm-dd-yyyy'));
+                var nowTime = moment().utcOffset(-5).format('x');
+                var nowNow = moment().utcOffset(-5).format('MM-DD-YYYY');
+
+                jq('#chooseDate').val(e.format('yyyy-mm-dd'));
                 jq('form.chooseHours').fadeIn(1000);
                 jq('.checkbox input[type=checkbox]').prop('disabled', false).prop('checked', false);
 
@@ -416,6 +435,18 @@ function fetchFreeDays(year, month) {
                 month = month.substring(0,month.length - 5);
                 year = nowDate.getFullYear();
                 fetchFreeDays(year, month);
+
+                jq(".checkbox input").each(function() {
+                    // print value
+                    var nowValue = moment( e.format('mm-dd-yyyy')+' '+jq(this).val() ).format('x');
+
+                    if( nowValue < nowTime ){
+                        jq(this).prop('disabled', true);                         
+                        jq(this).parent().css({'color':'rgba(0,0,0,.5)'});
+                    }else{
+                        jq(this).parent().css({'color':'rgba(0,0,0,1)'});
+                    }
+                });
 
                 jq.ajax({
                     type: 'POST',         
@@ -427,21 +458,9 @@ function fetchFreeDays(year, month) {
                     },
                     success: function(data, textStatus, XMLHttpRequest) {       
                         var arr = jq.parseJSON(data);
-                        var nowTime = moment().utcOffset(-5).format('HH:mm:ss');
-                        var nowNow = moment().utcOffset(-5).format('MM-DD-YYYY');
 
                         jq.each( arr, function( i, val ) {
                             jq('.checkbox input[value="'+val+'"]').prop('disabled', true).prop('checked', true);
-                        });
-
-                        jq(".checkbox input").each(function() {
-                            // print value
-                            var nowValue = moment( nowNow+' '+jq(this).val() ).format('HH:mm:ss');
-
-                            if( nowValue < nowTime ){
-                                jq(this).prop('disabled', true);                         
-                                jq(this).parent().css({'color':'rgba(0,0,0,0.5)'});
-                            }
                         });
                     },
                     error: function(MLHttpRequest, textStatus, errorThrown) {
@@ -465,8 +484,6 @@ function fetchFreeDays(year, month) {
                     }
                 });
             }
-
-            console.log(data);
         },
         error: function(MLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
@@ -487,11 +504,11 @@ function classesByTeacher(year, month) {
         },
         success: function(data, textStatus, XMLHttpRequest) {       
             if(data != ''){
+                teacherDays = [];
                 var arr = jq.parseJSON(data);
 
                 jq.each(arr, function(index, value) {
-                    teacherDays.push(value); // add this date to the freeDays array
-                    console.log(teacherDays);
+                    teacherDays.push(value); // add this date to the teacherDays array
                 });
             };
 
@@ -499,15 +516,11 @@ function classesByTeacher(year, month) {
                 startDate: today,
                 endDate: endDate,
             }).on('changeDate', function(e){
-                jq('#chooseDate').val(e.format('mm-dd-yyyy'));
+                jq(".loader").show();
+                jq('#chooseDate').val(e.format('yyyy-mm-dd'));
                 jq('.chooseDate').text(e.format('dd/mm/yyyy'));
 
                 var day = e.format('dd');
-
-                month = jq('.datepicker-days thead th.datepicker-switch').text();
-                month = month.substring(0,month.length - 5);
-                year = nowDate.getFullYear();
-                classesByTeacher(year, month);
 
                 jq.ajax({
                     type: 'POST',         
@@ -519,66 +532,87 @@ function classesByTeacher(year, month) {
                     },
                     success: function(data, textStatus, XMLHttpRequest) {       
                         jq('.availableH').html(data);
+                        setTimeout(function() {
+                            jq(".loader").hide();
+                        }, 500);
 
-                        jq.each( getClassStudent, function( i, val ) {
-                            var ID = val['id'];
-                            if(val[ID]['day'] == day && val['status'] == "active"){
-                                jq('.checkbox input[value="'+val[ID]['start_class']+'"]').prop('disabled', true).prop('checked', true);
+                        var itemsNum = sessionStorage.length - 1;
+                        var i = 0;
+
+                        for (i; i <= itemsNum; i++) {
+                            var ID = sessionStorage.key(i);
+                            var sameID = ID.split("_");
+                            console.log(sameID[1] + '_' + sameID[2]);
+
+                            jq('div.availableH td input[data-id='+ID+']').prop('disabled', true).prop('checked', true);
+                            // jq('a#'+ID).addClass('disabled');
+                        }
+
+                        jq('.datepicker-days .table-condensed td').each(function() {
+                            jq(this).removeClass('hasclass');
+                        });
+
+                        jq('.datepicker-days .table-condensed td').each(function() {
+                            var cellText = jq(this).text(); 
+
+                            for (var i = 0; i < teacherDays.length; i++) {
+                                if (teacherDays[i] == cellText) {
+                                    jq(this).not('.disabled').addClass('hasclass');
+                                }
                             }
                         });
                         
-                        jq('ul.availableH li .checkbox input[type="checkbox"]').click( function() {
+                        jq('div.availableH td input[type="checkbox"]').click( function() {
                             if(jq(this).is(':checked')){
                                 jq(this).prop('disabled', true);
-                            
-                                var hour = '';
-                                var date = '';
 
+                                id   = jq(this).data("id");
                                 hour = jq(this).val();
                                 date = jq('#chooseDate').val();
+
+                                sessionStorage.setItem(id, hour);
+                                var toJSON = JSON.stringify(sessionStorage);
 
                                 jq.ajax({
                                     type: 'POST',         
                                     url: apfajax.ajaxurl,
                                     data: {
                                         action: 'choose_classhour',
-                                        hour: hour,
-                                        date: date,
-                                        id_teacher: id_teacher, 
+                                        classes: toJSON,
+                                        id_teacher: id_teacher
                                     },
                                     success: function(data, textStatus, XMLHttpRequest) {       
                                         var arr = jq.parseJSON(data);
                                         var dataTable = jq('#selected-hours').dataTable();
 
+                                        console.log(data);
+
                                         dataTable.fnClearTable();
 
-                                        getClassStudent.push(arr);
+                                        jq.each( arr['data'], function( i, val ) {
+                                            dataTable.fnAddData([
+                                                val['day_class'],
+                                                val['start_class'],
+                                                val['end_class'],
+                                                val['action'],
+                                            ]);
 
-                                        jq.each( getClassStudent, function( i, val ) {
-                                            var ID = val['id'];
-                                            if(val['status'] == 'active'){
-                                                dataTable.fnAddData([
-                                                    val[ID]['date'],
-                                                    val[ID]['start_class'],
-                                                    val[ID]['end_class'],
-                                                    val[ID]['action'],
-                                                ]);
-                                            }
+                                            var itemsNum = sessionStorage.length - 1;
+                                            var i = 0;
+
+                                            for (i; i <= itemsNum; i++) {
+                                                var ID = sessionStorage.key(i);
+                                                var sameID = ID.split("_");
+                                                console.log(sameID[1] + '_' + sameID[2]);
+
+                                                jq('div.availableH td input[data-id='+ID+']').prop('disabled', true).prop('checked', true);
+                                                // jq('a#'+ID).addClass('disabled');
+                                            };
                                         });
-
-                                        var itemsNum = sessionStorage.length - 1;
-                                        var i = 0;
-
-                                        for (i; i <= itemsNum; i++) {
-                                            var ID = sessionStorage.key(i);
-                                            jq('a#'+ID).removeClass('disabled');
-                                        };
 
                                         jq('#selected-hours td').each(function() {
                                             jq(this).addClass('text-center');
                                         });
-
-                                        console.log(getClassStudent);
                                     },
                                     error: function(MLHttpRequest, textStatus, errorThrown) {
                                         alert(errorThrown);
@@ -634,11 +668,13 @@ function classesByHour(year, month) {
                 });
             };
 
+            jq(".loader").fadeOut(500);
+
             jq('.datepicker-byhour div#choosePicker').datepicker({
                 startDate: today,
                 endDate: endDate,
             }).on('changeDate', function(e){
-                jq('#chooseDate').val(e.format('mm-dd-yyyy'));
+                jq('#chooseDate').val(e.format('yyyy-mm-dd'));
                 jq('form.chooseHours').fadeIn(2000);
                 jq(".loader").show();
                 jq('.checkbox input[type=checkbox]').prop('disabled', false).prop('checked', false);
@@ -748,11 +784,23 @@ function classesByHour(year, month) {
                 jq('.datepicker-days .table-condensed td').each(function() {
                     var cellText = jq(this).text(); 
 
+                    if(jq(this).hasClass('new')){
+                        jq(this).addClass('disabled');
+                    }
+
                     for (var i = 0; i < hoursDays.length; i++) {
                         if (hoursDays[i] == cellText) {
                             jq(this).not('.disabled').addClass('hasclass');
                         }
                     }
+                });
+
+                jq('.datepicker-days .table-condensed td').each(function() {
+                    jq(this).not('.hasclass').addClass('disabled');
+                });
+            }else{
+                jq('.datepicker-days .table-condensed td').each(function() {
+                    jq(this).not('.hasclass').addClass('disabled');
                 });
             }
         },

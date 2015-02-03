@@ -28,13 +28,21 @@ get_header(); ?>
 	    $hm = $h * 60; 
 	    $ms = $hm * 60;
 
-	    $today = date('d-m-Y h:i A',time()-($ms));
+	    $today = date('Y-m-d h:i A',time()-($ms));
 	    $now = date('m-d-Y',time()-($ms));
 
 		?>
 		<script type="text/javascript">
 		jq(document).ready(function() {
-		    jq('#student-registers').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ] });
+		    jq('#student-registers').dataTable( { 
+		    	paging: false, 
+		    	searching: false, 
+		    	"scrollY": "507px", 
+		    	"scrollCollapse": true, 
+		    	"order": [ 
+		    		[0,"asc"] 
+		    	] 
+		    });
 
 		    var body_height = parseInt(jq('#student-registers_wrapper .dataTables_scrollBody').height());
 
@@ -142,13 +150,10 @@ get_header(); ?>
 				$teacherName = $teacher->name_teacher .' '.$teacher->lastname_teacher;
 				$date = date('d-m-Y', strtotime($teacher->register_date));
 
-				$birthday = explode('/', $teacher->birthday_teacher);
-				$birthday = $birthday[1].'/'.$birthday[0].'/'.$birthday[2];
-
-			    $today = date('m/d/Y',time()-($ms));
+				$today = date('m/d/Y',time()-($ms));
 
 				$dteStart = new DateTime($today); 
-				$dteEnd   = new DateTime($birthday);
+				$dteEnd   = new DateTime($teacher->birthday_teacher);
 
 				$dteDiff  = $dteStart->diff($dteEnd);
 				$years = $dteDiff->y;

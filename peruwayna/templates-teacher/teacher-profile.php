@@ -110,13 +110,13 @@ get_header(); ?>
 				<div class="form-group">
 					<label for="inputPassword" class="col-sm-4 control-label text-right">Contraseña Nueva</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputPassword" name="password" disabled>
+						<input type="password" class="form-control" id="inputPassword" name="password" disabled>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="inputRePassword" class="col-sm-4 control-label text-right">Repetir Contraseña Nueva</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputRePassword" name="repassword" disabled>
+						<input type="password" class="form-control" id="inputRePassword" name="repassword" disabled>
 					</div>
 				</div>
 				<div class="center-btn">
@@ -127,6 +127,9 @@ get_header(); ?>
 			<div class="bg-success text-center successUpdate" style="border-radius: 5px; display: none; margin: 0 auto; padding: 15px; width: 530px;"><h5>Sus datos fueron guardados correctamente.</h5></div>
 		</div>
 		</form>
+		<script type="text/javascript">
+			var id_teacher = <?php echo $teacher->id_teacher; ?>
+		</script>
 	<?php else : ?>
 		<div class="panel panel-theme-primary text-right">
 			<div class="panel-heading">Módulo de profesor</div>
@@ -166,5 +169,45 @@ get_header(); ?>
 		</div>
 	<?php endif; ?>
 	</div>
+
+	<div id="teacherUpdateModalPassword" class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="header-message">
+					<div class="titlesmall color gray text-center">Datos Actualizados</div>
+
+					<div style="margin: 0 auto; width: 67.66666667%;">
+						<p class="text-center small">Tu contraseña fue actualizada, se cerrará tu sesión para que vuelvas a ingresar.</p>
+
+						<div style="margin: 20px auto; width: 170px">
+							<a href="#" id="closeSession" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal" style="margin: 20px auto; width: 100px">Ok</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="teacherUpdateModal" class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="header-message">
+					<div class="titlesmall color gray text-center">Datos Actualizados</div>
+
+					<div style="margin: 0 auto; width: 67.66666667%;">
+						<p class="text-center small">Tus datos han sido actualizados en nuestro sistema.</p>
+
+						<div style="margin: 20px auto; width: 170px">
+							<a href="#" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal" style="margin: 20px auto; width: 100px">Ok</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var close_teacherSession = "<?php echo get_site_url() ?>/modulo-profesor/logout?id=1";
+	</script>
 
 <?php get_footer(); ?>

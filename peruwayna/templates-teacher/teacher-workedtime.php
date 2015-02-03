@@ -45,7 +45,7 @@ get_header(); ?>
 							<label for="inputDateStart" class="col-sm-4 control-label text-right">Fecha Inicio</label>
 							<div class="col-sm-8">
 								<div id="startdayNot" class="input-group date" data-date-format="mm-dd-yyyy">
-									<input type="text" class="form-control" id="inputDateStart" name="datestart" required>
+									<input type="text" class="form-control" id="DateStart" name="datestart" required>
 									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 								</div>
 							</div>
@@ -56,20 +56,29 @@ get_header(); ?>
 							<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Fin</label>
 							<div class="col-sm-8">
 				                <div id="startdayNot" class="input-group date" data-date-format="mm-dd-yyyy">
-									<input type="text" class="form-control" id="inputDateEnd" name="datestart" required>
+									<input type="text" class="form-control" id="DateEnd" name="datestart" required>
 									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-lg-2">
+						<input type="hidden" id="TeacherID" value="<?php echo $teacher->id_teacher; ?>">
 						<input type="submit" class="form-control btn btn-secundary" id="submitWorkedtime" value="Consultar">
 					</div>
 				</form>
 
 				<script type="text/javascript">
 				jq(document).ready(function() {
-				    jq('#mywork-teacher').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, });
+				    jq('#mywork-teacher').dataTable( { 
+				    	paging: false, 
+				    	searching: false, 
+				    	"scrollY": "507px", 
+				    	"scrollCollapse": true, 
+				    	"language": {
+							"zeroRecords": "<b>Escoge las fechas y da click en 'Consultar'.</b>"
+						}
+				    });
 				} );
 				</script>
 				<table id="mywork-teacher" class="table table-striped table-bordered text-center">

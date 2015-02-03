@@ -54,7 +54,15 @@ get_header(); ?>
 
 				<script type="text/javascript">
 				jq(document).ready(function() {
-				    jq('#mystudents-teacher').dataTable( { paging: false, searching: false, "scrollY": "300px", "scrollCollapse": true, });
+				    jq('#mystudents-teacher').dataTable( { 
+				    	paging: false, 
+				    	searching: false, 
+				    	"scrollY": "300px", 
+				    	"scrollCollapse": true, 
+				    	"language": {
+							"zeroRecords": "Los alumnos aún no han tenido clases contigo."
+						}
+				    });
 
 				    var body_height = parseInt(jq('#mystudents-teacher_wrapper .dataTables_scrollBody').height());
 

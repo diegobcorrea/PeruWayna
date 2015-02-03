@@ -196,8 +196,9 @@ jq(document).ready(function() {
 
 		btn.val('Cargando..');
 
-		var startDate = jq('#inputDateStart').val();
-		var endDate = jq('#inputDateEnd').val();
+		var startDate = jq('#DateStart').val();
+		var endDate = jq('#DateEnd').val();
+		var idTeacher = jq('#TeacherID').val();
 
 		jq.ajax({
 			type: 'POST',         
@@ -206,45 +207,54 @@ jq(document).ready(function() {
 			    action: 'teacher_workedtime',
 				startDate: startDate,
 				endDate: endDate,
-			    id_teacher: id_teacher,
+				idTeacher: idTeacher
 			},
 			success: function(data, textStatus, XMLHttpRequest) {		
-				var arr = jq.parseJSON(data);
 				var dataTable = jq('#mywork-teacher').dataTable();
+				if(data == 'fail'){
+					btn.val('Error..');
 
-				dataTable.fnClearTable();
+					setInterval(function() {
+						btn.val('Consultar');
+					}, 2500);
+				}
+				else{
+					var arr = jq.parseJSON(data);
 
-				jq.each(arr['day'], function(index, value) {
-					dataTable.fnAddData([
-				        value['id_class'],
-				        value['date'],
-				        value['start_class'],
-				        value['end_class'],
-				        value['status'],
-				        value['student_name']
-				    ]);
-                });
+					dataTable.fnClearTable();
 
-				jq('#mywork-teacher td').each(function() {
-                    jq(this).addClass('text-center');
-                });
-                jq('#mywork-teacher tr td:nth-child(5)').each(function() {
-                	if( jq(this).text() == 'COMPLETADA' ){
-                		jq(this).addClass('confirm');
-                	}
-                	else if( jq(this).text() == 'ALUMNO FALTÓ' ){
-                		jq(this).addClass('miss');
-                	}
-                	else if( jq(this).text() == 'CANCELADA -' ){
-                		jq(this).addClass('cancel');
-                	}
-                	else if( jq(this).text() == 'CANCELADA +' ){
-                		jq(this).addClass('cancel');
-                	}
-                });
+					jq.each(arr['day'], function(index, value) {
+						dataTable.fnAddData([
+					        value['id_class'],
+					        value['date'],
+					        value['start_class'],
+					        value['end_class'],
+					        value['status'],
+					        value['student_name']
+					    ]);
+	                });
 
-                jq('#workedTime').val(arr['timeworked']);
-                btn.val('Consultar');
+					jq('#mywork-teacher td').each(function() {
+	                    jq(this).addClass('text-center');
+	                });
+	                jq('#mywork-teacher tr td:nth-child(5)').each(function() {
+	                	if( jq(this).text() == 'COMPLETADA' ){
+	                		jq(this).addClass('confirm');
+	                	}
+	                	else if( jq(this).text() == 'ALUMNO FALTÓ' ){
+	                		jq(this).addClass('miss');
+	                	}
+	                	else if( jq(this).text() == 'CANCELADA -' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                	else if( jq(this).text() == 'CANCELADA +' ){
+	                		jq(this).addClass('cancel');
+	                	}
+	                });
+
+	                jq('#workedTime').val(arr['timeworked']);
+	                btn.val('Consultar');
+                }
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
 			    alert(errorThrown);
@@ -484,8 +494,7 @@ jq(document).ready(function() {
 
 		btn.val('Cargando..');
 
-    	var name = jq('#inputName').val();
-    	var lastname = jq('#inputLastname').val();
+    	var teacher = jq('#inputIDteacher').val();
     	var startDate = jq('#inputDateStart').val();
 		var endDate = jq('#inputDateEnd').val();
 
@@ -496,11 +505,9 @@ jq(document).ready(function() {
 			    action: 'admin_teacherHours',
 				startDate: startDate,
 				endDate: endDate,
-			    teacher_name: name,
-			    teacher_lastname: lastname,
+				teacher: teacher
 			},
 			success: function(data, textStatus, XMLHttpRequest) {
-
 				if(data == 'fail'){
 					btn.val('Error..');
 
@@ -567,8 +574,6 @@ jq(document).ready(function() {
 	                jq('#complete').val(arr['complete']);
 
 	                btn.val('Consultar');
-
-	                // console.log(arr);
                 }
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
@@ -584,8 +589,7 @@ jq(document).ready(function() {
 
 		btn.val('Cargando..');
 
-    	var name = jq('#inputName').val();
-    	var lastname = jq('#inputLastname').val();
+    	var student = jq('#inputName').val();
     	var startDate = jq('#inputDateStart').val();
 		var endDate = jq('#inputDateEnd').val();
 
@@ -596,8 +600,7 @@ jq(document).ready(function() {
 			    action: 'admin_studentHours',
 				startDate: startDate,
 				endDate: endDate,
-			    student_name: name,
-			    student_lastname: lastname,
+			    student: student,
 			},
 			success: function(data, textStatus, XMLHttpRequest) {		
 				if(data == 'fail'){
@@ -679,23 +682,21 @@ jq(document).ready(function() {
 	jq('#teacher-exportExcel').click( function(e){
     	e.preventDefault();
 
-    	var name = jq('#inputName').val();
-    	var lastname = jq('#inputLastname').val();
+    	var teacher = jq('#inputIDteacher').val();
     	var startDate = jq('#inputDateStart').val();
 		var endDate = jq('#inputDateEnd').val();
 
-		document.location.href= 'url_rel + "/export-excel.php?type=teacher&name="+name+"&lastname="+lastname+"&startDate="+startDate+"&endDate="+endDate';
+		document.location.href= url_rel + "/export-excel.php?type=teacher&id="+teacher+"&startDate="+startDate+"&endDate="+endDate;
 	});
 
 	jq('#student-exportExcel').click( function(e){
     	e.preventDefault();
 
-    	var name = jq('#inputName').val();
-    	var lastname = jq('#inputLastname').val();
+    	var student = jq('#inputIDstudent').val();
     	var startDate = jq('#inputDateStart').val();
 		var endDate = jq('#inputDateEnd').val();
 
-		document.location.href= 'url_rel + "/export-excel.php?type=student&name="+name+"&lastname="+lastname+"&startDate="+startDate+"&endDate="+endDate';
+		document.location.href= url_rel + "/export-excel.php?type=student&id="+student+"&startDate="+startDate+"&endDate="+endDate;
 	});
 
 	jq('#reservedClass-exportExcel').click( function(e){
@@ -769,6 +770,17 @@ jq(document).ready(function() {
                 		jq(this).addClass('cancel');
                 	}
                 });
+
+				setInterval(function() {
+		            jq('#table-hours').slideDown(1000);
+		        }, 500);
+
+                jq('#cancelminus').val(arr['cancelminus']);
+                jq('#cancelplus').val(arr['cancelplus']);
+                jq('#suspend').val(arr['suspend']);
+                jq('#suspendwos').val(arr['suspendwos']);
+                jq('#nocomplete').val(arr['nocomplete']);
+                jq('#complete').val(arr['complete']);
 
                 // console.log(arr);
                 
@@ -888,11 +900,17 @@ jq(document).ready(function() {
 						jq('#passSend').slideDown(500);
 		                // console.log(data);
 		                
-						setTimeout(function() {
+						jq('#sendPassOk').click( function(e){
+    						e.preventDefault();
+
 		                	jq('#RecoverPassword').modal('hide');
-				            jq('#completeForm').show();
-							jq('#passSend').hide();
-				        }, 3500);
+
+		                	setInterval(function() {
+								jq('#completeForm').show();
+								jq('#passSend').hide();
+					        }, 2000);
+				            
+				        });
 					},
 					error: function(MLHttpRequest, textStatus, errorThrown) {
 					    alert(errorThrown);
@@ -979,13 +997,16 @@ jq(document).ready(function() {
 						password: jq('#inputPassword').val(),
 					},
 					success: function(data, textStatus, XMLHttpRequest) {		
-						jq('#studentUpdateModal').on('show.bs.modal', centerModal);
-						jq('#studentUpdateModal').modal();
+						jq('#studentUpdateModalPassword').on('show.bs.modal', centerModal);
+						jq('#studentUpdateModalPassword').modal();
+
+						jq("#inputOldPassword").val('').removeClass('valid');
+						jq('#inputPassword').val('').removeClass('valid').prop('disabled', true);
+						jq('#inputRePassword').val('').removeClass('valid').prop('disabled', true);
 		                
 		                setInterval(function() {
-							jq('#studentUpdateModal').modal('hide');
-							jq('#studentUpdateModal').hide();
-				        }, 6000);
+							window.location.replace(close_session);
+				        }, 5000);
 					},
 					error: function(MLHttpRequest, textStatus, errorThrown) {
 					    alert(errorThrown);
@@ -1033,6 +1054,12 @@ jq(document).ready(function() {
 			});
     	}
 
+    });
+
+	jq('a#closeSession').click( function(e){
+    	e.preventDefault();
+
+    	window.location.replace(close_session);
     });
 
 	jq('a.recoverTeacherPass').click( function(e){
@@ -1094,13 +1121,16 @@ jq(document).ready(function() {
 						password: jq('#inputPassword').val(),
 					},
 					success: function(data, textStatus, XMLHttpRequest) {		
-						jq('#teacherUpdateModal').on('show.bs.modal', centerModal);
-						jq('#teacherUpdateModal').modal();
+						jq('#teacherUpdateModalPassword').on('show.bs.modal', centerModal);
+						jq('#teacherUpdateModalPassword').modal();
 		                
-		                setTimeout(function() {
-							jq('#teacherUpdateModal').modal('hide');
-							jq('#teacherUpdateModal').hide();
-				        }, 6000);
+		                jq("#inputOldPassword").val('').removeClass('valid');
+						jq('#inputPassword').val('').removeClass('valid').prop('disabled', true);
+						jq('#inputRePassword').val('').removeClass('valid').prop('disabled', true);
+		                
+		                setInterval(function() {
+							window.location.replace(close_teacherSession);
+				        }, 5000);
 					},
 					error: function(MLHttpRequest, textStatus, errorThrown) {
 					    alert(errorThrown);

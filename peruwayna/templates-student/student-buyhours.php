@@ -23,12 +23,7 @@ $_SESSION['uniqID'] = md5(uniqid(rand(), true));
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						Menu Principal <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/">Inicio</a></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/mi-perfil?action=edit">Mi Perfil</a></li>
-						<li class="divider"></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion">Cerrar Sesión</a></li>
-					</ul>
+					<?php include( TEMPLATEPATH . '/templates-student/student-menu.php'); ?>
 				</div>
 			</div>
 		</div>
@@ -41,9 +36,9 @@ $_SESSION['uniqID'] = md5(uniqid(rand(), true));
 			<div class="list-group col-md-6 col-md-offset-3">
 				<div class="list-group-item">
 					<div class="text-center" style="display: inline-block;">
-						<p class="list-group-item-text">paquete de 3 horas</p>
-						<h4 class="list-group-item-heading">US$15/hora</h4>
-						<small>¡Ahora hasta US$3 con esta opción!</small>
+						<p class="list-group-item-text"><strong>paquete de 3 horas = US$45</strong></p>
+						<p class="list-group-item-text">(Comprando este paquete cada hora te cuesta US$15)</p>
+						<small>¡Ahorra hasta US$3 con esta opción!</small>
 					</div>
 					<div class="text-center pull-right" style="display: inline-block; margin: 16px 8px 0;">
 						<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=businesstestpaypal@peruwayna.com" 
@@ -68,9 +63,9 @@ $_SESSION['uniqID'] = md5(uniqid(rand(), true));
 			<div class="list-group col-md-6 col-md-offset-3">
 				<div class="list-group-item">
 					<div class="text-center" style="display: inline-block;">
-						<p class="list-group-item-text">paquete de 10 horas</p>
-						<h4 class="list-group-item-heading">US$14/hora</h4>
-						<small>¡Ahora hasta US$20 con esta opción!</small>
+						<p class="list-group-item-text"><strong>paquete de 10 horas = US$140</strong></p>
+						<p class="list-group-item-text">(Comprando este paquete cada hora te cuesta US$14)</p>
+						<small>¡Ahorra hasta US$20 con esta opción!</small>
 					</div>
 					<div class="text-center pull-right" style="display: inline-block; margin: 16px 8px 0;">
 						<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=businesstestpaypal@peruwayna.com" 
@@ -95,9 +90,9 @@ $_SESSION['uniqID'] = md5(uniqid(rand(), true));
 			<div class="list-group col-md-6 col-md-offset-3">
 				<div class="list-group-item">
 					<div class="text-center" style="display: inline-block;">
-						<p class="list-group-item-text">paquete de 30 horas</p>
-						<h4 class="list-group-item-heading">US$13/hora</h4>
-						<small>¡Ahora hasta US$90 con esta opción!</small>
+						<p class="list-group-item-text"><strong>paquete de 30 horas = US$390</strong></p>
+						<p class="list-group-item-text">(Comprando este paquete cada hora te cuesta US$13)</p>
+						<small>¡Ahorra hasta US$20 con esta opción!</small>
 					</div>
 					<div class="text-center pull-right" style="display: inline-block; margin: 16px 8px 0;">
 						<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=businesstestpaypal@peruwayna.com" 
@@ -122,9 +117,9 @@ $_SESSION['uniqID'] = md5(uniqid(rand(), true));
 			<div class="list-group col-md-6 col-md-offset-3">
 				<div class="list-group-item">
 					<div class="text-center" style="display: inline-block;">
-						<p class="list-group-item-text">paquete de 60 horas</p>
-						<h4 class="list-group-item-heading">US$12/hora</h4>
-						<small>¡Ahora hasta US$240 con esta opción!</small>
+						<p class="list-group-item-text"><strong>paquete de 60 horas = US$720</strong></p>
+						<p class="list-group-item-text">(Comprando este paquete cada hora te cuesta US$12)</p>
+						<small>¡Ahorra hasta US$20 con esta opción!</small>
 					</div>
 					<div class="text-center pull-right" style="display: inline-block; margin: 16px 8px 0;">
 						<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=businesstestpaypal@peruwayna.com" 

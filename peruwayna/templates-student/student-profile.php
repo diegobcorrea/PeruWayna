@@ -17,12 +17,7 @@ get_header(); ?>
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						Menu Principal <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/">Inicio</a></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/mi-perfil?action=edit">Mi Perfil</a></li>
-						<li class="divider"></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion">Cerrar Sesión</a></li>
-					</ul>
+					<?php include( TEMPLATEPATH . '/templates-student/student-menu.php'); ?>
 				</div>
 			</div>
 		</div>
@@ -164,13 +159,13 @@ get_header(); ?>
 				<div class="form-group">
 					<label for="inputPassword" class="col-sm-4 control-label text-right">Contraseña Nueva</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputPassword" name="password" disabled>
+						<input type="password" class="form-control" id="inputPassword" name="password" disabled>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="inputRePassword" class="col-sm-4 control-label text-right">Repetir Contraseña Nueva</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputRePassword" name="repassword" disabled>
+						<input type="password" class="form-control" id="inputRePassword" name="repassword" disabled>
 					</div>
 				</div>
 				<div class="center-btn">
@@ -222,6 +217,24 @@ get_header(); ?>
 	<?php endif; ?>
 	</div>
 
+	<div id="studentUpdateModalPassword" class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="header-message">
+					<div class="titlesmall color gray text-center">Datos Actualizados</div>
+
+					<div style="margin: 0 auto; width: 67.66666667%;">
+						<p class="text-center small">Tu contraseña fue actualizada, se cerrará tu sesión para que vuelvas a ingresar.</p>
+
+						<div style="margin: 20px auto; width: 170px">
+							<a href="#" id="closeSession" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal" style="margin: 20px auto; width: 100px">Ok</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div id="studentUpdateModal" class="modal fade bs-example-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -229,10 +242,9 @@ get_header(); ?>
 					<div class="titlesmall color gray text-center">Datos Actualizados</div>
 
 					<div style="margin: 0 auto; width: 67.66666667%;">
-						<p class="text-center small">Tus datos han sido actualizados en nuestro sistema, si cambiaste tu contraseña te recomendamos cerrar sesión y volver
-							a ingresar para limpiar las cookies de tu ordenador.</p>
+						<p class="text-center small">Tus datos han sido actualizados en nuestro sistema.</p>
 
-						<div style="margin: 20px auto; width: 150px">
+						<div style="margin: 20px auto; width: 170px">
 							<a href="#" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal" style="margin: 20px auto; width: 100px">Ok</a>
 						</div>
 					</div>

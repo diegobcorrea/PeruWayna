@@ -26,18 +26,16 @@ get_header(); ?>
 					<div class="form-group">
 						<label for="inputName" class="col-sm-4 control-label text-right">Nombre</label>
 						<div class="col-sm-8">
-							<input type="text" class="form-control" id="inputName" name="name" required>
+							<?php $getTeachers = $wpdb->get_results( "SELECT * FROM wp_bs_teacher", OBJECT ); ?>
+							<select name="id_teacher" id="inputIDteacher">
+							<?php foreach ($getTeachers as $teacher) : ?>
+								<option value="<?php echo $teacher->id_teacher; ?>"><?php echo $teacher->name_teacher ?> <?php echo $teacher->lastname_teacher ?></option>
+							<?php endforeach; ?>
+							</select>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-5">
-					<div class="form-group">
-						<label for="inputLastname" class="col-sm-4 control-label text-right">Apellido</label>
-						<div class="col-sm-8">
-							<input type="text" class="form-control" id="inputLastname" name="lastname" required>
-						</div>
-					</div>
-				</div>
+				<div class="col-lg-5"></div>
 				<div class="col-lg-2">
 					<a class="form-control btn btn-secundary" id="teacher-exportExcel">Exportar Excel</a>
 				</div>
@@ -72,21 +70,6 @@ get_header(); ?>
 		</form>
 
 		<div id="dvjson"></div>
-
-		<script type="text/javascript">
-		jq(document).ready(function() {
-		    jq('#teacher-seehours').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ], "columnDefs": [
-            {
-                "targets": [ 0 ],
-                "visible": false,
-                "searchable": false
-            } ] });
-
-		    var body_height = parseInt(jq('#teacher-seehours_wrapper .dataTables_scrollBody').height());
-
-			jq('#teacher-seehours_wrapper .dataTables_scrollBody').height(body_height + 30);
-		} );
-		</script>
 		<table id="teacher-seehours" class="table table-striped table-bordered text-center">
 			<thead>
 				<tr>
@@ -142,6 +125,23 @@ get_header(); ?>
 				</div>
 			</div>
 		</div>
+
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+		    jQuery('#teacher-seehours').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ], "columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false
+            } ] });
+
+		    var body_height = parseInt(jQuery('#teacher-seehours_wrapper .dataTables_scrollBody').height());
+
+			jQuery('#teacher-seehours_wrapper .dataTables_scrollBody').height(body_height + 30);
+
+			jQuery("#inputIDteacher").chosen();
+		} );
+		</script>
 
 	<?php else : ?>
 		<script type="text/javascript">

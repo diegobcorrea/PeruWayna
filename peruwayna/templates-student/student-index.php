@@ -17,12 +17,7 @@ get_header(); ?>
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						Menu Principal <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/">Inicio</a></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/mi-perfil?action=edit">Mi Perfil</a></li>
-						<li class="divider"></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion">Cerrar Sesión</a></li>
-					</ul>
+					<?php include( TEMPLATEPATH . '/templates-student/student-menu.php'); ?>
 				</div>
 			</div>
 		</div>
@@ -58,8 +53,8 @@ get_header(); ?>
 					<strong>Please Note:</strong> All class hours are displayed in Peruvian local time (UTC -5:00)</p>
 
 				<script type="text/javascript">
-				jq(document).ready(function() {
-				    jq('#myclasses-student').dataTable( {
+				jQuery(document).ready(function() {
+				    jQuery('#myclasses-student').dataTable( {
 				        "scrollY":        "507px",
 				        "scrollCollapse": true,
 				        "paging":         false,
@@ -68,12 +63,15 @@ get_header(); ?>
 			                "targets": [ 0 ],
 			                "visible": false,
 			                "searchable": false
-			            } ]
+			            } ],
+			            "language": {
+							"zeroRecords": "<b>No tienes ninguna clase reservada comenzando próximamente.</b><br/>You don't have any reserved class starting soon."
+						} 
 				    } );
 
-				    var body_height = parseInt(jq('#myclasses-student_wrapper .dataTables_scrollBody').height());
+				    var body_height = parseInt(jQuery('#myclasses-student_wrapper .dataTables_scrollBody').height());
 
-				    jq('#myclasses-student_wrapper .dataTables_scrollBody').height(body_height + 30);
+				    jQuery('#myclasses-student_wrapper .dataTables_scrollBody').height(body_height + 30);
 				} );
 				</script>
 				<table id="myclasses-student" class="table table-striped table-bordered">
@@ -96,15 +94,15 @@ get_header(); ?>
 					    $hm = $h * 60; 
 					    $ms = $hm * 60;
 
-						$now = date('m-d-Y',time()-($ms));
+						$now = date('Y-m-d',time()-($ms));
 						$time = date('h:i A',time()-($ms));
 						$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_student = $user->id_student AND date_class >= '$now' ORDER BY date_class ASC", OBJECT );
 
 						foreach ($getClasses as $key => $class) : 
 							if($class->status == "CONFIRMADA" || $class->status == "SUSPENDIDA"):
 								$date = explode("-", $class->date_class);
-								$formatDate = $date[2].'-'.$date[0].'-'.$date[1] . $class->start_class;
-								$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] . $class->start_class ); 
+								$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->start_class;
+								$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
 
 								$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 								$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -309,15 +307,16 @@ get_header(); ?>
 				</div>
 
 				<div id="passSend" class="header-message" style="display: none">
-					<div class="titlesmall color gray text-center">¡Su contraseña fue cambiada con éxito!</div>
-
 					<div style="margin: 0 auto; width: 67.66666667%;">
-						<p class="text-center small">Te hemos enviado un mensaje a tu correo electrónico con tu nuevo contraseña.</p>
+						<p class="text-center small">Te hemos enviado una nueva contraseña para que puedas ingresar temporalmente a tu cuenta. Si deseas cambiarla puedes hacerlo en la sección de "Mi perfil".</p>
+						<p class="text-center small" style="font-style: italic;">We have sent you a new temporary password you can use to enter your account. If you want to change it you can do it on "My profile" section once you’re inside your account.</p>
+
+						<a href="#" id="sendPassOk" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal">¡Entendido! / Got it!.</a>
 					</div>
 				</div>
 
 				<div id="passError" class="header-message" style="display: none">
-					<div class="titlesmall color gray text-center">¡Error al cambiar contrasenã!</div>
+					<div class="titlesmall color gray text-center">¡Error al cambiar contraseña!</div>
 
 					<div style="margin: 0 auto; width: 67.66666667%;">
 						<p class="text-center small">El email ingresado no pertenece a ningún usuario, por favor ingrese una válido.</p>

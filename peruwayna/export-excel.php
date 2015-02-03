@@ -10,20 +10,15 @@ $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto"
 
 if($_GET['type'] == 'teacher' OR $_GET['type'] == 'student'):
 
-$name       = $_GET['name'];
-$lastname   = $_GET['lastname'];
-$startDate  = $_GET['startDate'];
-$endDate    = $_GET['endDate'];
+$id         = $_GET['id'];
+$startDate  = dateConvert($_GET['startDate']);
+$endDate    = dateConvert($_GET['endDate']);
 
 
 if($_GET['type'] == 'teacher'):
-	$teacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE name_teacher = '$name' AND lastname_teacher = '$lastname'", OBJECT );
-
-	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
+	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $id AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
 else:
-	$student = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE name_student = '$name' AND lastname_student = '$lastname'", OBJECT );
-
-	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
+	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_student = $id AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
 endif;
 
 header('Content-type: application/vnd.ms-excel');
@@ -69,7 +64,7 @@ header("Expires: 0");
 		<?php 
 
 		$date = explode("-", $class->date_class);
-        $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+        $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
         $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
 
@@ -110,7 +105,7 @@ $hm = $h * 60;
 $ms = $hm * 60;
 
 $today = date('d-m-Y h:i A',time()-($ms));
-$now = date('m-d-Y',time()-($ms));
+$now = date('Y-m-d',time()-($ms));
 
 if($_GET['type'] == 'reserved'):
     $getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE date_class >= '$now' AND status = 'CONFIRMADA' ORDER BY date_class", OBJECT );
@@ -163,7 +158,7 @@ header("Expires: 0");
         <?php 
 
         $date = explode("-", $class->date_class);
-        $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+        $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
         $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
 

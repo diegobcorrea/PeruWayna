@@ -20,21 +20,16 @@ get_header(); ?>
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						Menu Principal <span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/">Inicio</a></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/mi-perfil?action=edit">Mi Perfil</a></li>
-						<li class="divider"></li>
-						<li><a href="<?php echo get_site_url() ?>/sistema-de-reservas/cerrar-sesion">Cerrar Sesión</a></li>
-					</ul>
+					<?php include( TEMPLATEPATH . '/templates-student/student-menu.php'); ?>
 				</div>
 			</div>
 		</div>
 
 		<?php
 		if( isset($_SESSION['needtobuy']) && $_SESSION['needtobuy'] != '' ):
-			$return_url = "http://carlosmarruffo.com/clientes/peruwayna/sistema-de-reservas/confirmas-clases/";
+			$return_url = "<?php echo get_site_url() ?>/sistema-de-reservas/confirmas-clases/";
 		else:
-			$return_url = "http://carlosmarruffo.com/clientes/peruwayna/sistema-de-reservas/";
+			$return_url = "<?php echo get_site_url() ?>/sistema-de-reservas/";
 		endif;
 		?>
 

@@ -67,7 +67,7 @@ get_header(); ?>
 				    $hm = $h * 60; 
 				    $ms = $hm * 60;
 
-					$now = date('m-d-Y',time()-($ms));
+					$now = date('Y-m-d',time()-($ms));
 					$time = date('h:i A',time()-($ms));
 
 					global $wpdb, $dias, $meses;
@@ -76,8 +76,8 @@ get_header(); ?>
 					foreach ($getClasses as $key => $class) : 
 
 						$date = explode("-", $class->date_class);
-						$formatDate = $date[2].'-'.$date[0].'-'.$date[1] . $class->start_class;
-						$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+						$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->start_class;
+						$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
 						$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 						$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");

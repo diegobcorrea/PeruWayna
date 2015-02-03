@@ -13,6 +13,20 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+function dateConvert($date) {
+    $date = explode("-", $date);
+    $date = $date[2].'-'.$date[0].'-'.$date[1]; 
+
+    return $date;
+}
+
+function dateViewFormat($date) {
+    $date = explode("-", $date);
+    $date = $date[2].'/'.$date[1].'/'.$date[0]; 
+
+    return $date;
+}
+
 /**
  * Register AJAX handlers for functionality.
  */
@@ -331,6 +345,7 @@ function fetchFreeDays_callback() {
     global $wpdb;
      
     $results = '';
+    $id_teacher = $_POST['id_teacher'];
 
     $h = "5";
     $hm = $h * 60; 
@@ -344,17 +359,21 @@ function fetchFreeDays_callback() {
 
     $year = date('Y',time()-($ms));
     $day = date('d',time()-($ms));  
-    $startdate = $month . '-' . $day . '-' . $year;
-    $enddate = $month . '-31-' . $year; 
+    $startdate = $year . '-'. $month . '-' . $day;
+    $enddate = $year . '-' . $month . '-31'; 
 
-    $getHours = $wpdb->get_results( "SELECT available_date FROM wp_bs_availability WHERE available_date >= '$startdate' AND available_date <= '$enddate' GROUP BY available_date", OBJECT );
+    if($id_teacher):
+        $getHours = $wpdb->get_results( "SELECT available_date FROM wp_bs_availability WHERE id_teacher = $id_teacher AND available_date >= '$startdate' AND available_date <= '$enddate' GROUP BY available_date", OBJECT );
+    else:
+        $getHours = $wpdb->get_results( "SELECT available_date FROM wp_bs_availability WHERE available_date >= '$startdate' AND available_date <= '$enddate' GROUP BY available_date", OBJECT );
+    endif; 
 
     $time = array();
 
     if ($getHours) {
         foreach($getHours as $getH):
             $date = explode("-", $getH->available_date);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
             $time[] = date('j',$date);
         endforeach;
         $results = json_encode($time);
@@ -387,9 +406,9 @@ function teacher_workedtime_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $id_teacher = $_POST['id_teacher'];
-    $startDate  = $_POST['startDate'];
-    $endDate    = $_POST['endDate'];
+    $id_teacher = $_POST['idTeacher'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -408,7 +427,7 @@ function teacher_workedtime_callback() {
     if($getWorkedTtime){
         foreach($getWorkedTtime as $getDay => $value):
             $date = explode("-", $value->date_class);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
             $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
 
@@ -426,17 +445,20 @@ function teacher_workedtime_callback() {
             $getWT['day'][$getDay]['start_class'] = $value->start_class;
             $getWT['day'][$getDay]['end_class'] = $value->end_class;
             $getWT['day'][$getDay]['status'] = $value->status;
-        endforeach;      
+        endforeach;    
+
+        $startMinutes = ($getHoursWorked[0]->total * 30);
+        $noWorked = ($getHoursNoWorked[0]->total * 15);
+        $finalMinutes = $startMinutes - $noWorked;
+        $hours = gmdate("H:i", ($finalMinutes * 60));
+
+        $getWT['timeworked'] = $hours;  
+
+        $results = json_encode($getWT);
     }
-
-    $startMinutes = ($getHoursWorked[0]->total * 30);
-    $noWorked = ($getHoursNoWorked[0]->total * 15);
-    $finalMinutes = $startMinutes - $noWorked;
-    $hours = gmdate("H:i", ($finalMinutes * 60));
-
-    $getWT['timeworked'] = $hours;
-
-    $results = json_encode($getWT);
+    else {
+        $results = "fail";
+    }
 
     // Return the String
     die($results);   
@@ -590,13 +612,16 @@ function get_teacher_info_callback() {
 
     <div class="col-md-6">
         <div class="col-md-12">
-            <div class="datepicker-embed"><div id="choosePicker"></div></div>
-            <form class="availableHours">
-                <div class="chooseDate"></div>
-                <ul class="availableH"></ul>
-                <input type="hidden" id="chooseDate" name="chooseDate">
-                <input type="hidden" id="id_teacher" name="id_teacher" value="<?php echo $id_teacher; ?>">
-            </form>
+            <div class="inner-box">
+                <div class="loader"></div>
+                <div class="datepicker-embed"><div id="choosePicker"></div></div>
+                <form class="availableHours">
+                    <div class="chooseDate"></div>
+                    <div class="availableH"></div>
+                    <input type="hidden" id="chooseDate" name="chooseDate">
+                    <input type="hidden" id="id_teacher" name="id_teacher" value="<?php echo $id_teacher; ?>">
+                </form>
+            </div>
         </div>
         <div class="col-md-12 legendColor">
             <div class="active"><span></span>Seleccionado</div>
@@ -638,12 +663,14 @@ function get_teacher_info_callback() {
         jq('#confirm-classes').click( function(e) {
             e.preventDefault();
 
+            var toJSON = JSON.stringify(sessionStorage);
+
             jq.ajax({
                 type: 'POST',         
                 url: apfajax.ajaxurl,
                 data: {
                     action: 'save_class_student',
-                    classes: JSON.stringify(getClassStudent),
+                    classes: toJSON,
                     id_student: id_student,
                 },
                 success: function(data, textStatus, XMLHttpRequest) {       
@@ -680,8 +707,8 @@ function classesByTeacher_callback() {
     }
 
     $year = date('Y');
-    $startdate = $month . '-' . $day . '-' . $year;
-    $enddate = $month . '-30-' . $year; 
+    $startdate = $year . '-'. $month . '-' . $day;
+    $enddate = $year . '-' . $month . '-31'; 
 
     $id_teacher = $_POST['id_teacher'];
 
@@ -694,7 +721,7 @@ function classesByTeacher_callback() {
     if ($getHours) {
         foreach($getHours as $getH):
             $date = explode("-", $getH->available_date);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
             $time[] = date('j',$date);
         endforeach;
         $results = json_encode($time);
@@ -708,20 +735,62 @@ function get_available_hour_callback() {
     global $wpdb;
 
     $results    = '';
-    $id_teacher    = $_POST['id_teacher'];
+    $id_teacher = $_POST['id_teacher'];
     $date       = $_POST['date'];
 
-    if ( $_POST['date'] != '' OR $_POST['teacher'] != '' ) {
+    if ( $_POST['date'] != '' OR $_POST['teacher'] != '' ) :
         $getHours = $wpdb->get_results( "SELECT available_time FROM wp_bs_availability WHERE id_teacher = '$id_teacher' AND available_date = '$date' ORDER BY available_time ASC", OBJECT );
 
-        $time = array();
+        $time = array(); ?>
 
-        if ($getHours) {
-            foreach($getHours as $getH): ?>
-                <li><div class="checkbox"><label><input type="checkbox" value="<?php echo $getH->available_time; ?>"> <?php echo $getH->available_time; ?></label></div></li>
-            <?php endforeach;
-        }
-    }
+        <script type="text/javascript">
+        jq(document).ready(function() {
+            jq('#available_time-hours').dataTable( {
+                "scrollY":        "180px",
+                "scrollCollapse": true,
+                "paging":         false,
+                "order": [ [0,"asc"] ],
+                "columnDefs": [ {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                } ],
+                "language": {
+                    "zeroRecords": "Hubo un error! Es nuestra culpa, vuelve a elegir un día por favor!"
+                }
+            } );
+
+            var body_height = parseInt(jq('#available_time-hours_wrapper .dataTables_scrollBody').height());
+
+            jq('#available_time-hours_wrapper .dataTables_scrollBody').height(body_height + 30);
+            jq('#available_time-hours_wrapper .dataTables_scrollHead').hide();
+        } );
+        </script>
+        <table id="available_time-hours" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center" style="width: 70px">Horario</th>
+                    <th class="text-center" style="width: 30px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($getHours) : foreach($getHours as $getH): 
+
+                $newDate = date("d-m-Y");
+                $formatedHour = date('H:i', strtotime($newDate . ' ' . $getH->available_time) );
+                $hourID = str_replace(' ','-',str_replace(':','-',$getH->available_time));
+
+                ?>
+                <tr>
+                    <td><?php echo $formatedHour; ?></td>
+                    <td><?php echo $getH->available_time; ?></td>
+                    <td><input type="checkbox" value="<?php echo $getH->available_time; ?>" data-id="<?php echo $id_teacher; ?>_<?php echo $date; ?>_<?php echo $hourID; ?>"></td>
+                </tr>
+                <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+    <?php endif;
 
     // Return the String
     die($results);  
@@ -731,60 +800,47 @@ function choose_classhour_callback() {
     global $wpdb;
 
     $results = '';
-    $hour = $_POST['hour'];
-    $date = $_POST['date'];
     $id_teacher = $_POST['id_teacher'];
+    $arreglo = stripslashes($_POST['classes']);
+    $classes = json_decode("$arreglo");
 
     $getData = array();
 
-    if ( $_POST['hour'] != '' AND $_POST['date'] != '') {
-        $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE date_class = '$date' AND start_class = '$hour' AND id_teacher = '$id_teacher'", OBJECT );
+    foreach ($classes as $class => $value) {
+        $data = explode("_", $class);
+        $id_teacher = $data[0];
+        $day_class = $data[1];
+        $hour_class = str_replace('-',':',$data[2]);
 
-        $day = explode("-", $date);
+        $getTeacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE id_teacher = $id_teacher", OBJECT );
+        $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class = '$day_class' AND start_class = '$value'", OBJECT );
+        
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['id'] = $id_teacher;
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['day_class'] = dateViewFormat($getClass->date_class);
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['start_class'] = $value;
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['end_class'] = date("h:i A", strtotime('+30 minutes', strtotime($value) ) );
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['action'] = '<a href="#" id="data-'.$id_teacher.'-'.$day_class.'-'.$data[2].'" class="btn btn-secundary btn-xs btn-block" data-date="'.$day_class.'" data-hour="'.$data[2].'" data-teacher="'.$id_teacher.'">Eliminar clase</a>
+                <script>
+                var jq = jQuery;
+                jq("#data-'.$id_teacher.'-'.$day_class.'-'.$data[2].'").click( function(e) {
+                    e.preventDefault(); 
 
-        $hourID = str_replace(':','-',substr($getClass->start_class, 0, -3));
+                    var date = jq(this).data("date"); 
+                    var hour = jq(this).data("hour"); 
+                    var teacher = jq(this).data("teacher"); 
 
-        $getData['id'] = $day[1].'-'.$hourID; 
-        $getData['id_class'] = $getClass->id_class; 
-        $getData[$day[1].'-'.$hourID]['day'] = $day[1]; 
-        $getData[$day[1].'-'.$hourID]['date'] = $date;
-        $getData[$day[1].'-'.$hourID]['start_class'] = $getClass->start_class;
-        $getData[$day[1].'-'.$hourID]['end_class'] = $getClass->end_class;
-        $getData[$day[1].'-'.$hourID]['action'] = '<a href="#" id="'.$date.'-'.$hourID.'" class="btn btn-secundary btn-xs btn-block" data-date="'.$date.'" data-hour="'.$hour.'" data-teacher="'.$id_teacher.'">Eliminar clase</a>
-        <script>
-        var jq = jQuery;
-        jq("#'.$date.'-'.$hourID.'").click( function(e) {
-            e.preventDefault(); 
+                    jq(this).addClass("disabled");
+                    jq("a#'.$id_teacher.'_'.$day_class.'_'.$data[2].'").removeClass("removeTeacher").addClass("addTeacher").text("Seleccionar clase");
+                    
+                    sessionStorage.removeItem("'.$id_teacher.'_'.$day_class.'_'.$data[2].'");
 
-            var date = jq(this).data("date"); 
-            var hour = jq(this).data("hour"); 
-            var teacher = jq(this).data("teacher"); 
+                    if(sessionStorage.length < 1){
+                        jq("a#confirm-classes").addClass("disabled");
+                    }
 
-            changeDesc ( "'.$day[1].'-'.$hourID.'", "inactive" );
-            getClassStudent.splice( jq.inArray('.$day[1].'-'.$hourID.', getClassStudent), 1 );
-
-            var dataTable = jq("#selected-hours").dataTable();
-
-            dataTable.fnClearTable();
-
-            jq.each( getClassStudent, function( i, val ) {
-                var ID = val["id"];
-                if(val["status"] == "active"){
-                    dataTable.fnAddData([
-                        val[ID]["date"],
-                        val[ID]["start_class"],
-                        val[ID]["end_class"],
-                        val[ID]["action"],
-                    ]);
-                }
-            });
-
-            jq("#selected-hours td").each(function() {
-                jq(this).addClass("text-center");
-            });
-        });
-        </script>';
-        $getData['status'] = 'active';
+                });
+                </script>';
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['status'] = 'active';
     }
 
     $results = json_encode($getData);
@@ -799,7 +855,8 @@ function save_class_student_callback() {
     session_start();
 
     $results = '';
-    $classes = json_decode(stripslashes($_POST['classes']));
+    $arreglo = stripslashes($_POST['classes']);
+    $classes = json_decode("$arreglo");
     $id_student = $_POST['id_student'];
 
     $get = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $id_student", OBJECT );
@@ -807,8 +864,14 @@ function save_class_student_callback() {
     $numClass = 0;
     $idClasses = array();
 
-    foreach ($classes as $class) {
-        $idClasses[] = $class->id_class;
+    foreach ($classes as $class => $value) {
+        $data = explode("_", $class);
+        $id_teacher = $data[0];
+        $day_class = $data[1];
+        $hour_class = str_replace('-',':',$data[2]);
+        $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class = '$day_class'", OBJECT );
+
+        $idClasses[] = $getClass->id_class;
         $numClass++;
     }
 
@@ -820,6 +883,9 @@ function save_class_student_callback() {
     $_SESSION['hours_in_balance'] = $hours_in_balance;
 
     $results = $numClass; 
+
+    // Return the String
+    die($results);  
 
     // Return the String
     die($results);  
@@ -865,24 +931,21 @@ function admin_studentHours_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $name       = $_POST['student_name'];
-    $lastname   = $_POST['student_lastname'];
-    $startDate  = $_POST['startDate'];
-    $endDate    = $_POST['endDate'];
-
-    $student = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE name_student = '$name' AND lastname_student = '$lastname'", OBJECT );
+    $student    = $_POST['student'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
-    $getTeacerClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
+    $getTeacerClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
 
-    $getHours_cancelminus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA -' ORDER BY date_class" );
-    $getHours_cancelplus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA +' ORDER BY date_class" );
-    $getHours_suspend = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA' ORDER BY date_class" );
-    $getHours_confirm = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CONFIRMADA' ORDER BY date_class" );
-    $getHours_nocomplete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'ALUMNO FALTÓ' ORDER BY date_class" );
-    $getHours_complete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student->id_student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'COMPLETADA' ORDER BY date_class" );
+    $getHours_cancelminus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA -' ORDER BY date_class" );
+    $getHours_cancelplus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA +' ORDER BY date_class" );
+    $getHours_suspend = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA' ORDER BY date_class" );
+    $getHours_confirm = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CONFIRMADA' ORDER BY date_class" );
+    $getHours_nocomplete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'ALUMNO FALTÓ' ORDER BY date_class" );
+    $getHours_complete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_student = $student AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'COMPLETADA' ORDER BY date_class" );
 
     $getWT = array();
 
@@ -915,24 +978,27 @@ function admin_studentHours_callback() {
             $getWT['day'][$getDay]['teacher_name'] = $teacherName;
             $getWT['day'][$getDay]['student_name'] = $studentName;
             $getWT['day'][$getDay]['status'] = $value->status;
-        endforeach;      
+        endforeach; 
+
+        $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
+        $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
+        $suspend = m2h($getHours_suspend[0]->total * 30);
+        $confirm = m2h($getHours_confirm[0]->total * 30);
+        $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
+        $complete = m2h($getHours_complete[0]->total * 30);
+        
+        $getWT['cancelminus'] = $cancelminus;
+        $getWT['cancelplus'] = $cancelplus;
+        $getWT['suspend'] = $suspend;
+        $getWT['confirm'] = $confirm;
+        $getWT['nocomplete'] = $nocomplete;
+        $getWT['complete'] = $complete;
+
+        $results = json_encode($getWT);     
     }
-
-    $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
-    $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
-    $suspend = m2h($getHours_suspend[0]->total * 30);
-    $confirm = m2h($getHours_confirm[0]->total * 30);
-    $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
-    $complete = m2h($getHours_complete[0]->total * 30);
-    
-    $getWT['cancelminus'] = $cancelminus;
-    $getWT['cancelplus'] = $cancelplus;
-    $getWT['suspend'] = $suspend;
-    $getWT['confirm'] = $confirm;
-    $getWT['nocomplete'] = $nocomplete;
-    $getWT['complete'] = $complete;
-
-    $results = json_encode($getWT);
+    else{
+        $results = 'fail';
+    }
 
     // Return the String
     die($results);   
@@ -942,32 +1008,28 @@ function admin_teacherHours_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $name       = $_POST['teacher_name'];
-    $lastname   = $_POST['teacher_lastname'];
-    $startDate  = $_POST['startDate'];
-    $endDate    = $_POST['endDate'];
-
-    $teacherName = $name . ' ' . $lastname;
-    $teacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE name_teacher = '$name' AND lastname_teacher = '$lastname'", OBJECT );
+    $teacherID  = $_POST['teacher'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
-    $getTeacherClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
+    $getTeacherClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' ORDER BY date_class ASC", OBJECT );
 
-    $getHours_cancelminus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA -' ORDER BY date_class" );
-    $getHours_cancelplus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA +' ORDER BY date_class" );
-    $getHours_suspend = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA' ORDER BY date_class" );
-    $getHours_suspendwos = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class" );
-    $getHours_nocomplete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'ALUMNO FALTÓ' ORDER BY date_class" );
-    $getHours_complete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $teacher->id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'COMPLETADA' ORDER BY date_class" );
+    $getHours_cancelminus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA -' ORDER BY date_class" );
+    $getHours_cancelplus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA +' ORDER BY date_class" );
+    $getHours_suspend = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA' ORDER BY date_class" );
+    $getHours_suspendwos = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class" );
+    $getHours_nocomplete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'ALUMNO FALTÓ' ORDER BY date_class" );
+    $getHours_complete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = '$teacherID' AND date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'COMPLETADA' ORDER BY date_class" );
 
     $getWT = array();
 
-    if($getTeacherClasses){
-        foreach($getTeacerClasses as $getDay => $value):
+    if(!empty($getTeacherClasses) ){
+        foreach($getTeacherClasses as $getDay => $value):
             $date = explode("-", $value->date_class);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
             $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
 
@@ -994,26 +1056,26 @@ function admin_teacherHours_callback() {
             $getWT['day'][$getDay]['student_name'] = $studentName;
             $getWT['day'][$getDay]['status'] = $value->status;
         endforeach;      
+
+        $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
+        $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
+        $suspend = m2h($getHours_suspend[0]->total * 30);
+        $suspendwos = m2h($getHours_suspendwos[0]->total * 30);
+        $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
+        $complete = m2h($getHours_complete[0]->total * 30);
+        
+        $getWT['cancelminus'] = $cancelminus;
+        $getWT['cancelplus'] = $cancelplus;
+        $getWT['suspend'] = $suspend;
+        $getWT['suspendwos'] = $suspendwos;
+        $getWT['nocomplete'] = $nocomplete;
+        $getWT['complete'] = $complete;
+
+        $results = json_encode($getWT);
     }
     else{
         $results = 'fail';
     }
-
-    $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
-    $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
-    $suspend = m2h($getHours_suspend[0]->total * 30);
-    $suspendwos = m2h($getHours_suspendwos[0]->total * 30);
-    $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
-    $complete = m2h($getHours_complete[0]->total * 30);
-    
-    $getWT['cancelminus'] = $cancelminus;
-    $getWT['cancelplus'] = $cancelplus;
-    $getWT['suspend'] = $suspend;
-    $getWT['suspendwos'] = $suspendwos;
-    $getWT['nocomplete'] = $nocomplete;
-    $getWT['complete'] = $complete;
-
-    $results = json_encode($getWT);
 
     // Return the String
     die($results);   
@@ -1049,8 +1111,8 @@ function admin_allclassesHours_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $startDate  = $_POST['startDate'];
-    $endDate    = $_POST['endDate'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -1060,6 +1122,7 @@ function admin_allclassesHours_callback() {
     $getHours_cancelminus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA -' ORDER BY date_class" );
     $getHours_cancelplus = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CANCELADA +' ORDER BY date_class" );
     $getHours_suspend = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA' ORDER BY date_class" );
+    $getHours_suspendwos = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class" );
     $getHours_confirm = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'CONFIRMADA' ORDER BY date_class" );
     $getHours_nocomplete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'ALUMNO FALTÓ' ORDER BY date_class" );
     $getHours_complete = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE date_class >= '$startDate' AND date_class <= '$endDate' AND status = 'COMPLETADA' ORDER BY date_class" );
@@ -1069,7 +1132,7 @@ function admin_allclassesHours_callback() {
     if($getClasses){
         foreach($getClasses as $getDay => $value):
             $date = explode("-", $value->date_class);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
             $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
 
@@ -1095,24 +1158,26 @@ function admin_allclassesHours_callback() {
             $getWT['day'][$getDay]['teacher_name'] = $teacherName;
             $getWT['day'][$getDay]['student_name'] = $studentName;
             $getWT['day'][$getDay]['status'] = $value->status;
-        endforeach;      
+        endforeach;     
+
+        $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
+        $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
+        $suspend = m2h($getHours_suspend[0]->total * 30);
+        $suspendwos = m2h($getHours_suspendwos[0]->total * 30);
+        $confirm = m2h($getHours_confirm[0]->total * 30);
+        $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
+        $complete = m2h($getHours_complete[0]->total * 30);
+        
+        $getWT['cancelminus'] = $cancelminus;
+        $getWT['cancelplus'] = $cancelplus;
+        $getWT['suspend'] = $suspend;
+        $getWT['suspendwos'] = $suspendwos;
+        $getWT['confirm'] = $confirm;
+        $getWT['nocomplete'] = $nocomplete;
+        $getWT['complete'] = $complete;
+
+        $results = json_encode($getWT); 
     }
-
-    $cancelminus = m2h($getHours_cancelminus[0]->total * 30);
-    $cancelplus = m2h($getHours_cancelplus[0]->total * 30);
-    $suspend = m2h($getHours_suspend[0]->total * 30);
-    $confirm = m2h($getHours_confirm[0]->total * 30);
-    $nocomplete = m2h($getHours_nocomplete[0]->total * 30);
-    $complete = m2h($getHours_complete[0]->total * 30);
-    
-    $getWT['cancelminus'] = $cancelminus;
-    $getWT['cancelplus'] = $cancelplus;
-    $getWT['suspend'] = $suspend;
-    $getWT['confirm'] = $confirm;
-    $getWT['nocomplete'] = $nocomplete;
-    $getWT['complete'] = $complete;
-
-    $results = json_encode($getWT);
 
     // Return the String
     die($results);   
@@ -1122,8 +1187,8 @@ function admin_seeFreeHours_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $startDate  = $_POST['startDate'];
-    $endDate    = $_POST['endDate'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -1388,8 +1453,8 @@ function classesByHour_callback() {
     }
 
     $year = date('Y');
-    $startdate = $month . '-' . $day . '-' . $year;
-    $enddate = $month . '-30-' . $year; 
+    $startdate = $year . '-'. $month . '-' . $day;
+    $enddate = $year . '-' . $month . '-31'; 
 
     $id_teacher = $_POST['id_teacher'];
 
@@ -1402,7 +1467,7 @@ function classesByHour_callback() {
     if ($getHours) {
         foreach($getHours as $getH):
             $date = explode("-", $getH->available_date);
-            $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
             $time[] = date('j',$date);
         endforeach;
         $results = json_encode($time);
@@ -1423,7 +1488,7 @@ function get_all_hour_callback() {
         <script type="text/javascript">
         jq(document).ready(function() {
             jq('#available_time-hours').dataTable( {
-                "scrollY":        "150px",
+                "scrollY":        "200px",
                 "scrollCollapse": true,
                 "paging":         false,
                 "order": [ [0,"asc"] ],
