@@ -14,18 +14,6 @@
 body {
     
 }
-.inner-box {
-    height: 243px;
-    position: relative;
-    width: 427px;
-}
-a.btn {
-    color: #fff;
-}
-a#sendPassOk {
-    display: inline;
-    margin: 0 135px;
-}
 .header-message {
     margin: 65px 0 30px;
 }
@@ -465,6 +453,18 @@ table {
 }
 div.dataTables_filter, div.dataTables_info, div.dataTables_length, div.dataTables_paginate {
     display: none;
+}
+.inner-box {
+    height: 243px;
+    position: relative;
+    width: 427px;
+}
+a.btn {
+    color: #fff;
+}
+a#sendPassOk {
+    display: inline;
+    margin: 0 135px;
 }
 
 /* # Media Queries
