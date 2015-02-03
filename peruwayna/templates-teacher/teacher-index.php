@@ -57,6 +57,7 @@ get_header(); ?>
 							$ms = $hm * 60;
 
 							$time = date('h:i A',time()-($ms));
+
 							?>
 							<form class="chooseHours">
 								<ul>
