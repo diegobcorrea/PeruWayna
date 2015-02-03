@@ -675,6 +675,7 @@ function get_teacher_info_callback() {
                 },
                 success: function(data, textStatus, XMLHttpRequest) {       
                     console.log(data);
+                    sessionStorage.clear();
                     window.location.replace('<?php echo get_site_url() . "/sistema-de-reservas/confirmas-clases/"; ?>');
                     
                 },
@@ -869,7 +870,7 @@ function save_class_student_callback() {
         $id_teacher = $data[0];
         $day_class = $data[1];
         $hour_class = str_replace('-',':',$data[2]);
-        $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class = '$day_class'", OBJECT );
+        $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class = '$day_class' AND start_class = '$value'", OBJECT );
 
         $idClasses[] = $getClass->id_class;
         $numClass++;
@@ -882,13 +883,10 @@ function save_class_student_callback() {
     $_SESSION['numClass'] = $numClass;
     $_SESSION['hours_in_balance'] = $hours_in_balance;
 
-    $results = $numClass; 
+    $results = $numClass;
 
     // Return the String
-    die($results);  
-
-    // Return the String
-    die($results);  
+    die(json_encode($idClasses));  
 }
 
 function finish_booking_callback() {

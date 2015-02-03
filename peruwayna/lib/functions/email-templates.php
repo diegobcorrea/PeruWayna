@@ -16,7 +16,7 @@ function email_template_cancelminus( $id_class ) {
     $getTopic = $wpdb->get_row( "SELECT * FROM wp_bs_topics ORDER BY id_topic ASC LIMIT 1", OBJECT );
 
     $date = explode("-", $getClass->date_class);
-    $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+    $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
     $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1];
 
@@ -112,7 +112,7 @@ function email_template_cancelplus( $id_class ) {
     $getTeacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE id_teacher = '$getClass->id_teacher'", OBJECT );
 
     $date = explode("-", $getClass->date_class);
-    $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+    $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
     $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1];
 
@@ -195,7 +195,7 @@ function email_template_classconfirm( $id_class ){
     $getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = '$getClass->id_student'", OBJECT );
 
     $date = explode("-", $getClass->date_class);
-    $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+    $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
     $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1];
 
@@ -324,7 +324,7 @@ function email_template_classconfirm_student( $classes, $email ){
                                                 $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
                                                 $date = explode("-", $getClass->date_class);
-                                                $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+                                                $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
                                                 $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date)." de ".$getClass->start_class." a ".$getClass->end_class;
 
@@ -400,7 +400,7 @@ function email_template_suspend( $id_class ) {
     $update = $wpdb->query("UPDATE wp_bs_student SET hours_in_balance = '$hours' WHERE id_student = '$getStudent->id_student'");
 
     $date = explode("-", $getClass->date_class);
-    $date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+    $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
     $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1];
 

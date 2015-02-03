@@ -809,14 +809,14 @@ function updatestatus_do_this_twice() {
     $hm = $h * 60; 
     $ms = $hm * 60;
 
-	$now = date('m-d-Y',time()-($ms));
+	$now = date('Y-m-d',time()-($ms));
 	$time = date('h:i A',time()-($ms));
 	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'CONFIRMADA' ORDER BY date_class ASC", OBJECT );
 
 	foreach ($getClasses as $key => $class) : 
 		$date = explode("-", $class->date_class);
-		$formatDate = $date[2].'-'.$date[0].'-'.$date[1] . $class->end_class;
-		$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] . $class->start_class ); 
+		$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->end_class;
+		$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
 
 		$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -852,14 +852,14 @@ function updatestatus_disponible_this_twice() {
     $hm = $h * 60; 
     $ms = $hm * 60;
 
-	$now = date('m-d-Y',time()-($ms));
+	$now = date('Y-m-d',time()-($ms));
 	$time = date('h:i A',time()-($ms));
 	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'DISPONIBLE' ORDER BY date_class ASC", OBJECT );
 
 	foreach ($getClasses as $key => $class) : 
 		$date = explode("-", $class->date_class);
-		$formatDate = $date[2].'-'.$date[0].'-'.$date[1] . $class->end_class;
-		$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] . $class->start_class ); 
+		$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->end_class;
+		$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
 
 		$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");

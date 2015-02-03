@@ -126,7 +126,7 @@ get_header(); ?>
 
 								if($class->status == 'CONFIRMADA'){
 									$btnLabel = "Cancelar clase";
-									if($hours <= 48){
+									if($hours < 48){
 										$dataLabel = "cancelclass-minus";	
 									}else{
 										$dataLabel = "cancelclass-plus";
@@ -215,14 +215,14 @@ get_header(); ?>
 					<div class="header-message">
 						<div class="titlesmall color gray text-center">Cancelar mi clase</div>
 
-						<div style="margin: 0 auto; width: 67.66666667%;">
+						<div style="margin: 0 auto; width: 69.66666667%;">
 							<p class="text-center small">Estas cancelando una clase con más de 48 horas de anticipación.</p>
 							<p class="text-center small">Devolveremos las horas de clase canceladas a tu balance para que puedas reservar nuevas clases cuando quieras.</p>
 							<p class="text-center small">Nuestro sistema actualizará la clase al estado de "Cancelada" y tu profesor será alertado para que no espere por ti.</p>
 							<p class="text-center small">Igualmente nuestro sistema ya no te enviará más recordatorios para que asistas a esta clase.</p>
 
 							<div class="h5 color gray text-center">¿Estás seguro que deseas cancelas esta clase?</div>
-							<div style="margin: 20px auto; width: 305px">
+							<div style="margin: 20px auto; width: 315px">
 								<a href="#" class="btn btn-secundary btn-sm class-cancelclass">Si, cancelar mi clase</a>
 								<a href="#" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal">No quiero cancelar mi clase</a>
 							</div>

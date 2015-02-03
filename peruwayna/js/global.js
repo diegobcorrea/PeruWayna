@@ -270,6 +270,7 @@ jq(document).ready( function() {
         freeDays = [];
 
         jq('form.chooseHours').fadeOut(1000);
+        jq(".loader").show();
 
         if(ev.target.className == 'next'){
             fetchFreeDays(year, month);
@@ -291,6 +292,7 @@ jq(document).ready( function() {
         teacherDays = [];
 
         jq('form.chooseHours').fadeOut(1000);
+        jq(".loader").show();
 
         if(ev.target.className == 'next'){
             classesByTeacher(year, month);
@@ -425,6 +427,8 @@ function fetchFreeDays(year, month, id_teacher) {
                 });
             };
 
+            jq(".loader").fadeOut(500);
+
             jq('.datepicker-embed div#choosePicker').datepicker({
                 startDate: today,
                 endDate: endDate,
@@ -522,6 +526,8 @@ function classesByTeacher(year, month) {
                 });
             };
 
+            jq(".loader").fadeOut(500);
+
             jq('.datepicker-embed div#choosePicker').datepicker({
                 startDate: today,
                 endDate: endDate,
@@ -575,6 +581,7 @@ function classesByTeacher(year, month) {
                         jq('div.availableH td input[type="checkbox"]').click( function() {
                             if(jq(this).is(':checked')){
                                 jq(this).prop('disabled', true);
+                                jq(".loader").show();
 
                                 id   = jq(this).data("id");
                                 hour = jq(this).val();
@@ -595,7 +602,9 @@ function classesByTeacher(year, month) {
                                         var arr = jq.parseJSON(data);
                                         var dataTable = jq('#selected-hours').dataTable();
 
-                                        console.log(data);
+                                        setTimeout(function() {
+                                            jq(".loader").hide();
+                                        }, 500);
 
                                         dataTable.fnClearTable();
 
@@ -645,11 +654,23 @@ function classesByTeacher(year, month) {
                 jq('.datepicker-days .table-condensed td').each(function() {
                     var cellText = jq(this).text(); 
 
+                    if(jq(this).hasClass('new')){
+                        jq(this).addClass('disabled');
+                    }
+
                     for (var i = 0; i < teacherDays.length; i++) {
                         if (teacherDays[i] == cellText) {
                             jq(this).not('.disabled').addClass('hasclass');
                         }
                     }
+                });
+
+                jq('.datepicker-days .table-condensed td').each(function() {
+                    jq(this).not('.hasclass').addClass('disabled');
+                });
+            }else{
+                jq('.datepicker-days .table-condensed td').each(function() {
+                    jq(this).not('.hasclass').addClass('disabled');
                 });
             }
         },
