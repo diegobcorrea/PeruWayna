@@ -52,8 +52,8 @@ get_header(); ?>
 
 		<div class="col-md-12">
 			<script type="text/javascript">
-			jq(document).ready(function() {
-			    jq('#table-seeFreehours').dataTable( { 
+			jQuery(document).ready(function() {
+			    jQuery('#table-seeFreehours').dataTable( { 
 			    	paging: false, 
 			    	searching: false, 
 			    	"scrollY": "507px", 
@@ -66,9 +66,8 @@ get_header(); ?>
 		            }] 
 		        });
 
-			    var body_height = parseInt(jq('#table-seeFreehours_wrapper .dataTables_scrollBody').height());
-
-				jq('#table-seeFreehours_wrapper .dataTables_scrollBody').height(body_height + 30);
+			    var body_height = parseInt(jQuery('#table-seeFreehours_wrapper .dataTables_scrollBody').height());
+				jQuery('#table-seeFreehours_wrapper .dataTables_scrollBody').height(body_height + 30);
 			} );
 			</script>
 			<div class="col-md-7">
