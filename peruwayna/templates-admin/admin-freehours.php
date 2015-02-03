@@ -65,7 +65,6 @@ get_header(); ?>
 		                "searchable": false
 		            }] 
 		        });
-
 			    var body_height = parseInt(jQuery('#table-seeFreehours_wrapper .dataTables_scrollBody').height());
 				jQuery('#table-seeFreehours_wrapper .dataTables_scrollBody').height(body_height + 30);
 			} );
