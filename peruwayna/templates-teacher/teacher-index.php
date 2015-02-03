@@ -47,6 +47,7 @@ get_header(); ?>
 					<div class="col-md-8">
 						<div class="wrapper-loader">
 							<div class="loader"></div>
+						
 							<div class="datepicker-embed">
 								<div id="choosePicker"></div>
 							</div>
