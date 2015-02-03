@@ -36,7 +36,7 @@ get_header(); ?>
 				</div>
 				<div class="col-lg-5">
 					<div class="form-group">
-						<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Inicio</label>
+						<label for="inputDateEnd" class="col-sm-4 control-label text-right">Fecha Final</label>
 						<div class="col-sm-8">
 							<div id="notstart" class="input-group date" data-date-format="mm-dd-yyyy">
 								<input type="text" class="form-control" id="inputDateEnd" name="dateend" required>
