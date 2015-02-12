@@ -63,15 +63,6 @@ if(is_admin()){
 
 }
 
-//------ Twitter OAuth ------//
-require_once ('includes/twitteroauth.php');
-
-//------ Load Widgets ------//
-require_once ('includes/widgets/datetime-widget.php');
-require_once ('includes/widgets/twitter-widget.php');
-require_once ('includes/widgets/recent-posts-widget.php');
-require_once ('includes/widgets/select-pages-widget.php');
-
 //------ THEME OPTIONS PANEL ------//
 require_once('theme-options/options-init.php');
 
@@ -137,11 +128,6 @@ function image_sizes_attachment_fields_to_edit( $form_fields, $post ) {
     return $form_fields;
 }
 add_filter( 'attachment_fields_to_edit', 'image_sizes_attachment_fields_to_edit', 100, 2 );
-
-/**
- * Adds support for a custom header image.
- */
-require( get_template_directory() . '/includes/custom-header.php' );
 
 /**
  * Enqueues scripts and styles for front-end.
