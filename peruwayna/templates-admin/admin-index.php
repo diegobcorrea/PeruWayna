@@ -43,10 +43,10 @@ get_header(); ?>
 				<div class="form-group">
 					<label for="inputBirthday" class="col-sm-4 control-label text-right">Fecha de Nacimiento</label>
 					<div class="col-sm-8">
-						<div class="input-group date datepicker" data-date-format="DD/MM/YYYY">
-		                    <input type="text" class="form-control" id="inputBirthday" name="birthday" required>
-		                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-		                </div>
+						<div id="datetimeStart" class="input-group date" data-date-format="dd-mm-yyyy">
+							<input type="text" class="form-control" id="inputBirthday" name="birthday" required>
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -127,6 +127,25 @@ get_header(); ?>
 			</form>
 		</div>
 	<?php endif; ?>
+	</div>
+
+	<div id="SuccessModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="header-message">
+					<div class="titlesmall color gray text-center">Usuario creado</div>
+
+					<div style="margin: 0 auto; width: 67.66666667%;">
+						<p class="text-center small">El usuario "<span class="newTeacher"></span>" ha sido creado correctamente.</p>
+						<p class="text-center small">Igualmente se ha enviado un correo de confirmación al usuario con las instrucciones de logueo</p>
+
+						<div style="margin: 20px auto; width: 98px">
+							<a href="#" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal">Cerrar / Close</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 <?php get_footer(); ?>

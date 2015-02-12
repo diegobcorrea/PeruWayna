@@ -1,4 +1,5 @@
 <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+	<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo get_site_url() ?>/admin-panel/">Agregar nuevo profesor</a></li>
 	<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo get_site_url() ?>/admin-panel/horas-profesor/">Consultar Horas de Profesor</a></li>
 	<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo get_site_url() ?>/admin-panel/horas-alumno/">Consultar Horas del Alumno</a></li>
 	<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo get_site_url() ?>/admin-panel/registro-general/">Registro General</a></li>

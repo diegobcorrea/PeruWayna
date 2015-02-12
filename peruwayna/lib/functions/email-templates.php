@@ -608,3 +608,83 @@ function email_template_recoverpass2( $email, $password ) {
         echo "error send mail to " . $email;
     }  
 }
+
+function email_template_teacherpass( $email, $password ) {
+    global $wpdb;
+
+    $getTeacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE email_p_teacher = '$email'", OBJECT );
+
+    //$to = "ddumst@gmail.com";
+    $to = $email;
+
+    $subject = 'Peruwayna - ¡Bienvenido a Spanish Online! ';
+
+    $headers = "From: support@peruwayna.com\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+    $message = "<html><body><style type='text/css'>p, td { font-size: 12px; }</style>";
+    $message.= "<table width='744' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; font-size: 12px;'>
+                    <tbody>
+                        <tr>
+                            <td style='padding: 20px 0; vertical-align: top;'><img src='" . get_template_directory_uri() . "/images/email/logo-email.png'></td>
+                            <td style='padding: 20px 20px 20px 0; vertical-align: top;'>
+                            <table width='570' cellspacing='0' cellpadding='0' border='0'>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h1 style='color: #ff4546; font-family: Arial; font-size: 36px; line-height: 1em;'>¡Bienvenido a Spanish Online!</h1>
+                                            <p>Tu cuenta de profesor ha sido exitosamente autorizada por nuestro Coordinador Académico. Desde ahora puedes utilizarla para entrar al modulo de profesores y administrar tus clases en nuestro sistema de reservas.</p>
+
+                                            <table width='270' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; padding: 10px;'>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Tu usuario es: ".$getTeacher->email_c_teacher."</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tu clave de acceso temporal es: ".$password."</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <p>Para ingresar al modulo de profesores haz <a href=\"www.book-a-class.com/onlinecampus/modulo-de-profesores\">click aquí</a>.</p>
+                                            
+                                            <p>Si todavía no sabes como utilizar el modulo de profesores puedes aprender como hacerlo leyendo nuestro <a href=\"http://www.peruwaynaonlinecampus.com/#!guia-de-uso---cuenta-del-profesor/c22hx\">tutorial de uso</a>.</p>
+
+                                            <p>Igualmente, si deseas actualizar tu clave de acceso temporal puedes hacerlo en la sección de \"Mi perfil\" dentro de tu cuenta.</p>
+
+                                            <p>En caso tengas cualquier pregunta o duda puedes contactarnos cuando lo desees enviándonos un correo a onlinecampus@peruwayna.com o llamándonos al +(51)(1) 255-7824</p> 
+
+                                            <p>¡Felicidades y éxitos en esta nueva etapa trabajando juntos!</p>
+
+                                            <p style='font-style: italic;'>Grupo Peruwayna<br/>
+                                            Tel: +(51)(1) 255-7824<br/>
+                                            www.peruwaynaonlinecampus.com</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>";
+
+    $message.= "</body></html>";
+
+    $mail = new PHPMailer(); // defaults to using php "mail()"
+    $mail->IsSendmail(); // telling the class to use SendMail transport
+
+    $mail->SetFrom('support@peruwayna.com', 'PeruWayna');
+
+    $mail->AddAddress($to);
+
+    $mail->Subject = utf8_decode($subject);
+
+    $mail->MsgHTML( utf8_decode($message) );
+
+    if( $mail->Send() ) {
+        echo "send mail to " . $email;
+    }else{
+        echo "error send mail to " . $email;
+    }  
+}

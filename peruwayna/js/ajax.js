@@ -27,7 +27,12 @@ jq(document).ready(function() {
 				    skype : jq('#inputSkype').val(),
 				},
 				success: function(data, textStatus, XMLHttpRequest) {
-				   jq("#AddTeacherForm")[0].reset();
+					jq(".newTeacher").text( jq('#inputName').val() + ' ' + jq('#inputLastname').val() );
+				   
+				   	jq('#SuccessModal').on('show.bs.modal', centerModal);
+					jq('#SuccessModal').modal();
+
+					jq("#AddTeacherForm")[0].reset();
 				},
 				error: function(MLHttpRequest, textStatus, errorThrown) {
 				    alert(errorThrown);

@@ -20,6 +20,13 @@ function dateConvert($date) {
     return $date;
 }
 
+function dateLatinToDate($date) {
+    $date = explode("-", $date);
+    $date = $date[2].'-'.$date[1].'-'.$date[0]; 
+
+    return $date;
+}
+
 function dateViewFormat($date) {
     $date = explode("-", $date);
     $date = $date[2].'/'.$date[1].'/'.$date[0]; 
@@ -95,10 +102,12 @@ function add_teacher_callback() {
     $h = "5";
     $hm = $h * 60; 
     $ms = $hm * 60;
+    $new_password = randomPassword();
+    $md5_newpass = md5($new_password);
 
     $date     = gmdate('Y-m-d H:i:s', time()-($ms));
 
-    if ( $_POST['name'] != '' OR $_POST['email1'] != '' OR $_POST['password'] != '' OR $_POST['skype'] != '' ) {
+    if ( $_POST['name'] != '' OR $_POST['email1'] != '' OR $_POST['skype'] != '' ) {
         $wpdb->insert( 
             'wp_bs_teacher', 
             array( 
@@ -109,11 +118,13 @@ function add_teacher_callback() {
                 'email_c_teacher'     => $_POST['email2'],
                 'skype_teacher'       => $_POST['skype'],
                 'country_teacher'     => $_POST['country'],
-                'birthday_teacher'    => $_POST['birthday'],
-                'password_teacher'    => md5($_POST['password']),
+                'birthday_teacher'    => dateLatinToDate($_POST['birthday']),
+                'description_teacher' => $_POST['description'],
+                'password_teacher'    => $md5_newpass,
                 'register_date'       => $date
             ), 
             array( 
+                '%s',
                 '%s',
                 '%s',
                 '%s',
@@ -128,6 +139,7 @@ function add_teacher_callback() {
         );
 
         $results = 'success';
+        email_template_teacherpass($_POST['email1'],$new_password);
     }
     else {
         $results = 'error';
