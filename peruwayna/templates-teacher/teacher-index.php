@@ -21,6 +21,7 @@ get_header(); ?>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/'; ?>">Agregar Disponibilidad</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/clases'; ?>">Mi programación de clases</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/horas-laboradas'; ?>">Mis horas laboradas</a></li>
+						<li><a href="<?php echo get_site_url() . '/modulo-profesor/horas-expiradas'; ?>">Mis horas expiradas</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/mis-alumnos'; ?>">Mis alumnos</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/perfil'; ?>">Mi perfil</a></li>
 						<li class="divider"></li>
@@ -194,5 +195,50 @@ get_header(); ?>
 			</div>
 		</div>
 	</div>
+
+<?php 
+
+	$h = "5";
+    $hm = $h * 60; 
+    $ms = $hm * 60;
+
+	$now = date('m-d-Y',time()-($ms));
+	$time = date('h:i A',time()-($ms));
+	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'CONFIRMADA' AND reminder = '0' ORDER BY date_class ASC", OBJECT );
+
+	foreach ($getClasses as $class) : 
+		$date = explode("-", $class->date_class);
+		$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->start_class;
+		$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
+
+		$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+
+	    $today = date('Y-m-d h:i A',time()-($ms));
+
+		$dteStart = new DateTime($today); 
+		$dteEnd   = new DateTime($formatDate);
+
+		$dteDiff  = $dteStart->diff($dteEnd);
+		$hours = $dteDiff->h;
+		$hours = $hours + ($dteDiff->days*24);
+		$minutes = $dteDiff->i;
+
+		if($class->status == 'CONFIRMADA'){
+			if($hours <= 23 AND $minutes <= 59){
+				if($class->id_student != 0){
+					$getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $class->id_student", OBJECT );
+
+					$studentName = $getStudent->name_student .' '.$getStudent->lastname_student;
+					$to = $getStudent->email_student;
+					
+					echo $to;
+					echo $hours.':'.$minutes.' <br/> ';
+				}
+			}	
+		}
+	endforeach;
+
+?>
 
 <?php get_footer(); ?>

@@ -1,3 +1,6 @@
 *.sh
 .DS_Store
 send_mail.py
+peruwayna/Gruntfile.js
+peruwayna/npm-debug.log
+peruwayna/node_modules/

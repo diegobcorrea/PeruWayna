@@ -688,7 +688,7 @@ function prefix_do_this_hourly() {
 	include_once($_SERVER['DOCUMENT_ROOT'].'/clientes/peruwayna/wp-config.php');
 	include_once($_SERVER['DOCUMENT_ROOT'].'/clientes/peruwayna/wp-load.php');
 
-	global $wpdb, $dias, $meses;
+	global $wpdb, $dias, $meses, $to;
 	
 	$h = "5";
     $hm = $h * 60; 
@@ -696,12 +696,12 @@ function prefix_do_this_hourly() {
 
 	$now = date('m-d-Y',time()-($ms));
 	$time = date('h:i A',time()-($ms));
-	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'CONFIRMADA' ORDER BY date_class ASC", OBJECT );
+	$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'CONFIRMADA' AND reminder = '0' ORDER BY date_class ASC", OBJECT );
 
 	foreach ($getClasses as $key => $class) : 
 		$date = explode("-", $class->date_class);
-		$formatDate = $date[2].'-'.$date[0].'-'.$date[1] . $class->start_class;
-		$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] . $class->start_class ); 
+		$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->start_class;
+		$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
 
 		$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -714,82 +714,90 @@ function prefix_do_this_hourly() {
 		$dteDiff  = $dteStart->diff($dteEnd);
 		$hours = $dteDiff->h;
 		$hours = $hours + ($dteDiff->days*24);
-		$minutes = $dteDiff->m;
+		$minutes = $dteDiff->i;
 
 		if($class->status == 'CONFIRMADA'){
-			if($hours == 24 AND $minutes < 30){
+			if($hours <= 23 AND $minutes <= 59){
 
 				if($class->id_student != 0){
 					$getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $class->id_student", OBJECT );
 
 					$studentName = $getStudent->name_student .' '.$getStudent->lastname_student;
 					$to = $getStudent->email_student;
-				}else{
-					$studentName = ' - ';
+
+					$getTeacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE id_teacher = $class->id_teacher", OBJECT );
+
+					$teacherName = $getTeacher->name_teacher .' '.$getTeacher->lastname_teacher;
+
+					$subject = 'Peruwayna - Recordatorio de Clase';
+
+					$headers = "From: no-reply@peruwayna.com\r\n";
+					$headers .= "MIME-Version: 1.0\r\n";
+					$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+					$message = "<html><body><style type='text/css'>p, td { font-size: 12px; }</style>";
+					$message.= "<table width='744' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; font-size: 12px;'>
+					                <tbody>
+					                    <tr>
+					                        <td style='padding: 20px 0; vertical-align: top;'><img src='" . get_template_directory_uri() . "/images/email/logo-email.png'></td>
+					                        <td style='padding: 20px 20px 20px 0; vertical-align: top;'>
+					                        <table width='570' cellspacing='0' cellpadding='0' border='0'>
+					                            <tbody>
+					                                <tr>
+					                                    <td>
+					                                        <h1 style='color: #ff4546; font-family: Arial; font-size: 36px; line-height: 1em;'>¡Recordatorio de clase!</h1>
+					                                        <p>Recuerda que tienes esta clase pronto, toma las medidas necesarias para poder asistir.</p>
+					                                        
+					                                        <p>Los detalles de la clase reservada son:</p>
+
+					                                        <table width='270' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; padding: 10px;'>
+				                                                <tbody>
+				                                                    <tr>
+				                                                        <td>Fecha: ".$dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date)."</td>
+				                                                    </tr>
+				                                                    <tr>
+				                                                        <td>Hora: De ".$class->start_class." a ".$class->end_class."</td>
+				                                                    </tr>
+				                                                    <tr>
+				                                                        <td>Nombre del Profesor: ".$teacherName."</td>
+				                                                    </tr>
+				                                                    <tr>
+				                                                        <td>Skype: ".$getTeacher->skype_teacher."</td>
+				                                                    </tr>
+				                                                </tbody>
+				                                            </table>
+
+					                                        <p style='float: right; font-style: italic;'>El equipo Peruwayna</p>
+					                                    </td>
+					                                </tr>
+					                            </tbody>
+					                        </table>
+					                        </td>
+					                    </tr>
+					                </tbody>
+					            </table>";
+
+					$message.= "</body></html>";
+
+					$mail = new PHPMailer(); // defaults to using php "mail()"
+				    $mail->IsSendmail(); // telling the class to use SendMail transport
+
+				    $mail->SetFrom('support@peruwayna.com', 'PeruWayna');
+
+				    $mail->AddAddress($to);
+
+				    $mail->Subject = utf8_decode($subject);
+
+				    $mail->MsgHTML( utf8_decode($message) );
+
+				    if( $mail->Send() ) {
+					    echo "sendMail";
+					    $wpdb->update( 'wp_bs_class', array('reminder' => '1'), array('id_class' => $class->id_class), array('%d'), array('%d') );
+					}else{
+					    echo "errorMail";
+					} 
+
 				}
-				
-				//$to = "ddumst@gmail.com";
-
-				$subject = 'Peruwayna - Recordatorio de Clase';
-
-				$headers = "From: no-reply@peruwayna.com\r\n";
-				$headers .= "MIME-Version: 1.0\r\n";
-				$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-
-				$message = "<html><body><style type='text/css'>p, td { font-size: 12px; }</style>";
-				$message.= "<table width='744' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; font-size: 12px;'>
-				                <tbody>
-				                    <tr>
-				                        <td style='padding: 20px 0; vertical-align: top;'><img src='" . get_template_directory_uri() . "/images/email/logo-email.png'></td>
-				                        <td style='padding: 20px 20px 20px 0; vertical-align: top;'>
-				                        <table width='570' cellspacing='0' cellpadding='0' border='0'>
-				                            <tbody>
-				                                <tr>
-				                                    <td>
-				                                        <h1 style='color: #ff4546; font-family: Arial; font-size: 36px; line-height: 1em;'>¡Recordatorio de clase!</h1>
-				                                        <p>Recuerda que tienes esta clase pronto, toma las medidas necesarias para poder asistir.</p>
-				                                        
-				                                        <p>Los detalles de la clase reservada son:</p>
-
-				                                        <table width='270' cellspacing='0' cellpadding='0' style='border: 2px solid #000; font-family: Arial; padding: 10px;'>
-			                                                <tbody>
-			                                                    <tr>
-			                                                        <td>Fecha: ".$dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date)."</td>
-			                                                    </tr>
-			                                                    <tr>
-			                                                        <td>Hora: De ".$class->start_class." a ".$class->end_class."</td>
-			                                                    </tr>
-			                                                </tbody>
-			                                            </table>
-
-				                                        <p style='float: right; font-style: italic;'>El equipo Peruwayna</p>
-				                                    </td>
-				                                </tr>
-				                            </tbody>
-				                        </table>
-				                        </td>
-				                    </tr>
-				                </tbody>
-				            </table>";
-
-				$message.= "</body></html>";
-
-				$mail = new PHPMailer(); // defaults to using php "mail()"
-			    $mail->IsSendmail(); // telling the class to use SendMail transport
-
-			    $mail->SetFrom('support@peruwayna.com', 'PeruWayna');
-
-			    $mail->AddAddress($to);
-
-			    $mail->Subject = utf8_decode($subject);
-
-			    $mail->MsgHTML( utf8_decode($message) );
-
-			    if( $mail->Send() ) {
-				    echo "sendMail";
-				}else{
-				    echo "errorMail";
-				} 
 
 			}
 		}

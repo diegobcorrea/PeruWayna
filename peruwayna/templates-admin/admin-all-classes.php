@@ -55,12 +55,18 @@ get_header(); ?>
 
 		<script type="text/javascript">
 		jq(document).ready(function() {
-		    jq('#allclasses').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ], "columnDefs": [
-            {
-                "targets": [ 0 ],
-                "visible": false,
-                "searchable": false
-            } ] });
+		    jq('#allclasses').dataTable( { 
+		    	paging: false, 
+		    	searching: false, 
+		    	"scrollY": "507px", 
+		    	"scrollCollapse": true, 
+		    	"order": [ [0,"asc"] ], 
+		    	"columnDefs": [{
+	                "targets": [ 0 ],
+	                "visible": false,
+	                "searchable": false
+            	}] 
+        	});
 
 		    var body_height = parseInt(jq('#allclasses_wrapper .dataTables_scrollBody').height());
 

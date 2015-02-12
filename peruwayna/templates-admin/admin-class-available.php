@@ -96,8 +96,8 @@ get_header(); ?>
 				foreach ($getClasses as $class) : 
 
 				$date = explode("-", $class->date_class);
-				$timeNow = strtotime($date[2].'/'.$date[0].'/'.$date[1] . ' '. $class->start_class);
-				$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+				$timeNow = strtotime($date[0].'/'.$date[1].'/'.$date[2] . ' '. $class->start_class);
+				$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 				
 				$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 				$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");

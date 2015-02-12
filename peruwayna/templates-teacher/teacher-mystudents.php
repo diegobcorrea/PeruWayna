@@ -21,6 +21,7 @@ get_header(); ?>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/'; ?>">Agregar Disponibilidad</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/clases'; ?>">Mi programación de clases</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/horas-laboradas'; ?>">Mis horas laboradas</a></li>
+						<li><a href="<?php echo get_site_url() . '/modulo-profesor/horas-expiradas'; ?>">Mis horas expiradas</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/mis-alumnos'; ?>">Mis alumnos</a></li>
 						<li><a href="<?php echo get_site_url() . '/modulo-profesor/perfil'; ?>">Mi perfil</a></li>
 						<li class="divider"></li>
@@ -195,6 +196,22 @@ get_header(); ?>
 				<div class="modal-dialog">
 					<div class="modal-content">
 						
+					</div>
+				</div>
+			</div>
+
+			<div id="errorStudent" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div id="completeForm" class="header-message">
+							<div style="margin: 0 auto; width: 67.66666667%;">
+								<p class="text-center small">Error: El ID del alumno que indicaste no tiene clases registradas contigo por lo que no puedes acceder a su información ni modificarla</p>
+
+								<div style="margin: 20px auto; width: 100px">
+									<a href="#" class="btn btn-secundary btn-sm class-cancel" data-dismiss="modal">Ok, entiendo!</a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

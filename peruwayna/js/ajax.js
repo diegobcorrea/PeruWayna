@@ -262,6 +262,70 @@ jq(document).ready(function() {
 		});
 	});
 
+	jq('#submitExpiredtime').click( function(e){
+		e.preventDefault();
+
+		var btn = jq(this);
+
+		btn.val('Cargando..');
+
+		var startDate = jq('#DateStart').val();
+		var endDate = jq('#DateEnd').val();
+		var idTeacher = jq('#TeacherID').val();
+
+		jq.ajax({
+			type: 'POST',         
+			url: apfajax.ajaxurl,
+			data: {
+			    action: 'teacher_expiredtime',
+				startDate: startDate,
+				endDate: endDate,
+				idTeacher: idTeacher
+			},
+			success: function(data, textStatus, XMLHttpRequest) {		
+				var dataTable = jq('#mywork-teacher').dataTable();
+				if(data == 'fail'){
+					btn.val('Error..');
+
+					setInterval(function() {
+						btn.val('Consultar');
+					}, 2500);
+				}
+				else{
+					var arr = jq.parseJSON(data);
+
+					dataTable.fnClearTable();
+
+					jq.each(arr['day'], function(index, value) {
+						dataTable.fnAddData([
+					        value['id_class'],
+					        value['date'],
+					        value['start_class'],
+					        value['end_class'],
+					        value['status'],
+					        value['student_name']
+					    ]);
+	                });
+
+					jq('#mywork-teacher td').each(function() {
+	                    jq(this).addClass('text-center');
+	                });
+	                jq('#mywork-teacher tr td:nth-child(5)').each(function() {
+	                	if( jq(this).text() == 'EXPIRADA' ){
+	                		jq(this).addClass('miss');
+	                	}
+	                });
+
+	                jq('#workedTime').val(arr['timeworked']);
+	                btn.val('Consultar');
+                }
+			},
+			error: function(MLHttpRequest, textStatus, errorThrown) {
+			    alert(errorThrown);
+			}
+		});
+	});
+
 	jq('#submitChangeStatus').click( function(e){
 		e.preventDefault();
 
@@ -315,31 +379,40 @@ jq(document).ready(function() {
 
 		var id_student = jq('#inputIDstudent').val();
 
+		console.log(id_teacher);
+
 		jq.ajax({
 			type: 'POST',         
 			url: apfajax.ajaxurl,
 			data: {
 			    action: 'teacher_getstudent',
 				id_student: id_student,
+				id_teacher: id_teacher
 			},
-			success: function(data, textStatus, XMLHttpRequest) {		
-				var arr = jq.parseJSON(data);
+			success: function(data, textStatus, XMLHttpRequest) {
+				if(data != 'fail'){		
+					var arr = jq.parseJSON(data);
 
-				jq('#student_id').val(arr['id']);
-				jq('#student_name').val(arr['name']);
-				jq('#student_lastname').val(arr['lastname']);
-				jq('#student_skype').val(arr['skype']);
-				jq('#student_mail').val(arr['email']);
-				jq('#student_country').val(arr['country']);
-				jq('#student_city').val(arr['city']);
-				jq('#student_birthday').val(arr['birthday']);
-				jq('#student_language').val(arr['language']);
-				jq('#student_olanguage').val(arr['olanguage']);
-				jq('#student_work').val(arr['work']);
-				jq('#student_level option[value="'+arr['level']+'"]').attr('selected','selected');
-				jq('#student_annotation').val(arr['annotation']);
+					jq('#student_id').val(arr['id']);
+					jq('#student_name').val(arr['name']);
+					jq('#student_lastname').val(arr['lastname']);
+					jq('#student_skype').val(arr['skype']);
+					jq('#student_mail').val(arr['email']);
+					jq('#student_country').val(arr['country']);
+					jq('#student_city').val(arr['city']);
+					jq('#student_birthday').val(arr['birthday']);
+					jq('#student_language').val(arr['language']);
+					jq('#student_olanguage').val(arr['olanguage']);
+					jq('#student_work').val(arr['work']);
+					jq('#student_level option[value="'+arr['level']+'"]').attr('selected','selected');
+					jq('#student_annotation').val(arr['annotation']);
 
-				jq('#submitChangeStudent').removeClass('disabled');
+					jq('#submitChangeStudent').removeClass('disabled');
+				}
+				else {
+					jq('#errorStudent').on('show.bs.modal', centerModal);
+					jq('#errorStudent').modal();
+				}
 			},
 			error: function(MLHttpRequest, textStatus, errorThrown) {
 			    alert(errorThrown);
@@ -720,7 +793,7 @@ jq(document).ready(function() {
 		var endDate = jq('#inputDateEnd').val();
 
 		jq.ajax({
-			type: 'POST',         
+			type: 'GET',         
 			url: apfajax.ajaxurl,
 			data: {
 			    action: 'admin_allclassesHours',
@@ -746,7 +819,7 @@ jq(document).ready(function() {
 
 					jq.each(arr['day'], function(index, value) {
 						dataTable.fnAddData([
-					        index,
+					        value['index'],
 					        value['date'],
 					        value['start_class'],
 					        value['end_class'],
@@ -770,6 +843,9 @@ jq(document).ready(function() {
 	                		jq(this).addClass('confirm');
 	                	}
 	                	else if( jq(this).text() == 'ALUMNO FALTÓ' ){
+	                		jq(this).addClass('miss');
+	                	}
+	                	else if( jq(this).text() == 'EXPIRADA' ){
 	                		jq(this).addClass('miss');
 	                	}
 	                	else if( jq(this).text() == 'SUSPENDIDA' ){
@@ -796,6 +872,8 @@ jq(document).ready(function() {
 	                jq('#suspendwos').val(arr['suspendwos']);
 	                jq('#nocomplete').val(arr['nocomplete']);
 	                jq('#complete').val(arr['complete']);
+
+	                btn.val('Consultar');
                 }
                 
 			},

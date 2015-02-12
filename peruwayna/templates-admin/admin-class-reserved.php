@@ -37,7 +37,21 @@ get_header(); ?>
 
 		<script type="text/javascript">
 		jq(document).ready(function() {
-		    jq('#reservedClass').dataTable( { paging: false, searching: false, "scrollY": "507px", "scrollCollapse": true, "order": [ [0,"asc"] ] });
+		    jq('#reservedClass').dataTable( { 
+		    	paging: false, 
+		    	searching: false, 
+		    	"scrollY": "507px", 
+		    	"scrollCollapse": true, 
+		    	"order": [ [0,"asc"] ],
+		    	"columnDefs": [ {
+	                "targets": [ 0 ],
+	                "visible": false,
+	                "searchable": false
+	            } ] ,
+	            "language": {
+					"zeroRecords": "No hay clases reservadas por el momento."
+				} 
+		    });
 
 		    var body_height = parseInt(jq('#reservedClass_wrapper .dataTables_scrollBody').height());
 
@@ -47,6 +61,7 @@ get_header(); ?>
 		<table id="reservedClass" class="table table-striped table-bordered text-center">
 			<thead>
 				<tr>
+					<th class="text-center" style="width: 70px">Orden</th>
 					<th class="text-center" style="width: 300px">Día</th>
 					<th class="text-center" style="width: 100px">Desde</th>
 					<th class="text-center" style="width: 100px">Hasta</th>
@@ -64,7 +79,8 @@ get_header(); ?>
 				foreach ($getClasses as $class) : 
 
 				$date = explode("-", $class->date_class);
-				$date = strtotime( $date[2].'/'.$date[0].'/'.$date[1] ); 
+				$timeNow = strtotime($date[0].'/'.$date[1].'/'.$date[2] . ' '. $class->start_class);
+				$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
 				$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
 				$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -87,6 +103,7 @@ get_header(); ?>
 
 				?>
 				<tr>
+					<td class="text-center"><?php echo $timeNow; ?></td>
 					<td class="text-center" style="width: 300px"><?php echo $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date); ?></td>
 					<td class="text-center" style="width: 100px"><?php echo $class->start_class; ?></td>
 					<td class="text-center" style="width: 100px"><?php echo $class->end_class; ?></td>

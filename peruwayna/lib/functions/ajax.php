@@ -41,6 +41,7 @@ function ajax_register_actions() {
 
     'teacher_suspend_class' => 'teacher_suspend_class_callback',
     'teacher_workedtime'    => 'teacher_workedtime_callback',
+    'teacher_expiredtime'   => 'teacher_expiredtime_callback',
     'teacher_updatestatus'  => 'teacher_updatestatus_callback',
     'teacher_getstudent'    => 'teacher_getstudent_callback',
     'teacher_savestudent'   => 'teacher_savestudent_callback',
@@ -414,13 +415,10 @@ function teacher_workedtime_callback() {
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
     $getWorkedTtime = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' 
-                    AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE' AND status NOT LIKE 'SUSPENDIDA' AND status NOT LIKE 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class", OBJECT );
+                    AND status NOT LIKE 'EXPIRADA' AND status NOT LIKE 'CANCELADA +' AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE' AND status NOT LIKE 'SUSPENDIDA' AND status NOT LIKE 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class", OBJECT );
 
     $getHoursWorked = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' 
-                    AND status NOT LIKE 'CANCELADA +' AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE' AND status NOT LIKE 'SUSPENDIDA' AND status NOT LIKE 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class" );
-
-    $getHoursNoWorked = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' 
-                    AND status NOT LIKE 'COMPLETADA' AND status NOT LIKE 'ALUMNO FALTÓ' AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE' AND status NOT LIKE 'CANCELADA +' AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE'" );
+                    AND status NOT LIKE 'EXPIRADA' AND status NOT LIKE 'CANCELADA +' AND status NOT LIKE 'CONFIRMADA' AND status NOT LIKE 'DISPONIBLE' AND status NOT LIKE 'SUSPENDIDA' AND status NOT LIKE 'SUSPENDIDA SIN ALUMNO' ORDER BY date_class" );
 
     $getWT = array();
 
@@ -448,8 +446,65 @@ function teacher_workedtime_callback() {
         endforeach;    
 
         $startMinutes = ($getHoursWorked[0]->total * 30);
-        $noWorked = ($getHoursNoWorked[0]->total * 15);
-        $finalMinutes = $startMinutes - $noWorked;
+        $finalMinutes = $startMinutes;
+        $hours = gmdate("H:i", ($finalMinutes * 60));
+
+        $getWT['timeworked'] = $hours;  
+
+        $results = json_encode($getWT);
+    }
+    else {
+        $results = "fail";
+    }
+
+    // Return the String
+    die($results);   
+}
+
+function teacher_expiredtime_callback() {
+    global $wpdb, $dias, $meses;
+     
+    $results    = '';
+    $id_teacher = $_POST['idTeacher'];
+    $startDate  = dateConvert($_POST['startDate']);
+    $endDate    = dateConvert($_POST['endDate']);
+
+    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+
+    $getWorkedTtime = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' 
+                    AND status = 'EXPIRADA' ORDER BY date_class", OBJECT );
+
+    $getHoursWorked = $wpdb->get_results( "SELECT COUNT(*) as total FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class >= '$startDate' AND date_class <= '$endDate' 
+                    AND status = 'EXPIRADA' ORDER BY date_class" );
+
+    $getWT = array();
+
+    if($getWorkedTtime){
+        foreach($getWorkedTtime as $getDay => $value):
+            $date = explode("-", $value->date_class);
+            $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
+
+            $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
+
+            if($value->id_student != 0){
+                $getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $value->id_student", OBJECT );
+
+                $studentName = $getStudent->name_student .' '.$getStudent->lastname_student;
+            }else{
+                $studentName = ' - ';
+            }
+
+            $getWT['day'][$getDay]['id_class'] = $value->id_class;
+            $getWT['day'][$getDay]['student_name'] = $studentName;
+            $getWT['day'][$getDay]['date'] = $date;
+            $getWT['day'][$getDay]['start_class'] = $value->start_class;
+            $getWT['day'][$getDay]['end_class'] = $value->end_class;
+            $getWT['day'][$getDay]['status'] = $value->status;
+        endforeach;    
+
+        $startMinutes = ($getHoursWorked[0]->total * 30);
+        $finalMinutes = $startMinutes;
         $hours = gmdate("H:i", ($finalMinutes * 60));
 
         $getWT['timeworked'] = $hours;  
@@ -488,26 +543,36 @@ function teacher_getstudent_callback() {
 
     $results    = '';
     $id_student = $_POST['id_student'];
+    $id_teacher = $_POST['id_teacher'];
 
-    $getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $id_student", OBJECT );
+    $getStudent = $wpdb->get_row( "SELECT wp_bs_student.* FROM wp_bs_class JOIN wp_bs_student WHERE wp_bs_class.id_teacher = {$id_teacher} AND wp_bs_class.id_student = {$id_student} GROUP BY wp_bs_class.id_student", OBJECT );
+    // $getStudent = $wpdb->get_row( "SELECT * FROM wp_bs_student WHERE id_student = $id_student", OBJECT );
 
     $user = array();
 
-    $user['id'] = $getStudent->id_student;
-    $user['name'] = $getStudent->name_student;
-    $user['lastname'] = $getStudent->lastname_student;
-    $user['skype'] = $getStudent->skype_student;
-    $user['email'] = $getStudent->email_student;
-    $user['country'] = $getStudent->country_student;
-    $user['city'] = $getStudent->city_student;
-    $user['birthday'] = $getStudent->birthday_student;
-    $user['language'] = $getStudent->native_language_student;
-    $user['olanguage'] = $getStudent->other_language_student;
-    $user['work'] = $getStudent->campo_student;
-    $user['level'] = $getStudent->level_student;
-    $user['annotation'] = $getStudent->annotation_student;
+    if($getStudent):
 
-    $results = json_encode($user);
+        $user['id'] = $getStudent->id_student;
+        $user['name'] = $getStudent->name_student;
+        $user['lastname'] = $getStudent->lastname_student;
+        $user['skype'] = $getStudent->skype_student;
+        $user['email'] = $getStudent->email_student;
+        $user['country'] = $getStudent->country_student;
+        $user['city'] = $getStudent->city_student;
+        $user['birthday'] = $getStudent->birthday_student;
+        $user['language'] = $getStudent->native_language_student;
+        $user['olanguage'] = $getStudent->other_language_student;
+        $user['work'] = $getStudent->campo_student;
+        $user['level'] = $getStudent->level_student;
+        $user['annotation'] = $getStudent->annotation_student;
+
+        $results = json_encode($user);
+
+    else:
+
+        $results = "fail";
+
+    endif;
 
     // Return the String
     die($results);   
@@ -1109,8 +1174,8 @@ function admin_allclassesHours_callback() {
     global $wpdb, $dias, $meses;
      
     $results    = '';
-    $startDate  = dateConvert($_POST['startDate']);
-    $endDate    = dateConvert($_POST['endDate']);
+    $startDate  = dateConvert($_GET['startDate']);
+    $endDate    = dateConvert($_GET['endDate']);
 
     $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
@@ -1130,6 +1195,7 @@ function admin_allclassesHours_callback() {
     if($getClasses){
         foreach($getClasses as $getDay => $value):
             $date = explode("-", $value->date_class);
+            $timeNow = strtotime($date[0].'/'.$date[1].'/'.$date[2] . ' '. $value->start_class);
             $date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] ); 
 
             $date = $dias[date('w', $date)]." ".date('d',$date)." de ". $meses[date('n', $date)-1]. " del ".date('Y', $date);
@@ -1150,12 +1216,13 @@ function admin_allclassesHours_callback() {
                 $teacherName = ' - ';
             }
 
-            $getWT[$getDay]['date'] = $date;
-            $getWT[$getDay]['start_class'] = $value->start_class;
-            $getWT[$getDay]['end_class'] = $value->end_class;
-            $getWT[$getDay]['teacher_name'] = $teacherName;
-            $getWT[$getDay]['student_name'] = $studentName;
-            $getWT[$getDay]['status'] = $value->status;
+            $getWT['day'][$getDay]['index'] = $timeNow;
+            $getWT['day'][$getDay]['date'] = $date;
+            $getWT['day'][$getDay]['start_class'] = $value->start_class;
+            $getWT['day'][$getDay]['end_class'] = $value->end_class;
+            $getWT['day'][$getDay]['teacher_name'] = $teacherName;
+            $getWT['day'][$getDay]['student_name'] = $studentName;
+            $getWT['day'][$getDay]['status'] = $value->status;
         endforeach;     
 
         $cancelminus = m2h($getHours_cancelminus[0]->total * 30);

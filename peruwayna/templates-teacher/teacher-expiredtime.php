@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Teacher Panel - Horas Laboradas
+ * Template Name: Teacher Panel - Horas Expiradas
  */
 
 get_header(); ?>
@@ -33,11 +33,10 @@ get_header(); ?>
 
 		<div id="teacher-details" class="row">
 			<div class="col-md-12 add-bottom">
-				<div class="h4 add-bottom"><strong>Mi registro de horas laboradas</strong></div>
+				<div class="h4 add-bottom"><strong>Mi registro de horas expiradas</strong></div>
 
 				<p class="add-bottom">
-					El siguiente historial de clases laboradas detalla únicamente las clases completadas (clases realizadas) y las clases en las que el alumno faltó 
-					(las horas en las que un alumno falta son igualmente remuneradas para el profesor por lo cual también se condideran como horas laboradas).
+					El siguiente historial de clases se detalla únicamente las clases expiradas (clases sin alumno que pasaron su fecha).
 				</p>
 
 				<form id="HourTeacherForm" class="form-horizontal row" role="form">
@@ -65,7 +64,7 @@ get_header(); ?>
 					</div>
 					<div class="col-lg-2">
 						<input type="hidden" id="TeacherID" value="<?php echo $teacher->id_teacher; ?>">
-						<input type="submit" class="form-control btn btn-secundary" id="submitWorkedtime" value="Consultar">
+						<input type="submit" class="form-control btn btn-secundary" id="submitExpiredtime" value="Consultar">
 					</div>
 				</form>
 
@@ -100,65 +99,14 @@ get_header(); ?>
 
 				<div class="text-right row">
 					<div class="form-group pull-right">
-						<label for="workedTime" class="col-sm-8 control-label text-right" style="line-height: 2.3em;">Total de Horas Laboradas</label>
+						<label for="workedTime" class="col-sm-8 control-label text-right" style="line-height: 2.3em;">Total de Horas Expiradas</label>
 						<div class="col-sm-4">
 							<input type="text" class="form-control text-center" id="workedTime" name="workedTime">
 						</div>
 					</div>
 				</div>
-
-				<p class="text-right small">
-					El total de las horas laboradas = <span class="confirm">COMPLETADAS</span> + <span class="miss">ALUMNO FALTÓ</span> + <span class="cancel">CANCELADAS -</span><br/>
-					(<span class="cancel">CANCELADAS -</span> = horas canceladas con menos de 48 horas).<br/>
-					Por favor notar que las horas canceladas con más de 48 horas no cuentan como horas laboradas.<br/>
-					(<span class="cancel">CANCELADAS +</span> = horas canceladas con más de 48 horas).
-				</p>
 			</div>
-
-			<div class="col-md-12 add-bottom">
-				<div class="h4 add-bottom"><strong>Actualizar el estado de una clase</strong></div>
-
-				<p class="small">
-					<strong>NOTA:</strong> El sistema de reservas y horarios registrará automáticamente una clase como "<span class="confirm">COMPLETADA</span>" inmediatamente después
-					del término de una clase. En caso de que el alumno haya faltado (no haya asistido a su clase en vivo) es responsabilidad del profesor actualizar el estado de la clase
-					a "<span class="miss">ALUMNO FALTÓ</span>" cambiando el estado en la lista deplegable inferior.
-				</p>
-
-				<form id="HourTeacherForm" class="form-horizontal row" role="form">
-					<div class="col-md-5">
-						<div class="form-group">
-							<label for="inputIDclass" class="col-sm-4 control-label text-right">ID de la clase</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id="inputIDclass" name="inputIDclass" required>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-5">
-						<div class="form-group">
-							<label for="inputChangeStatus" class="col-sm-4 control-label text-right">Estado</label>
-							<div class="col-sm-8">
-				                <select id="inputChangeStatus" class="form-control">
-									<option>Elegir en la lista</option>
-									<option class="confirm" value="COMPLETADA">COMPLETADA</option>
-									<option class="miss" value="ALUMNO FALTÓ">ALUMNO FALTÓ</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-2">
-						<input type="submit" class="form-control btn btn-secundary" id="submitChangeStatus" value="Cambiar Estado">
-					</div>
-				</form>
-			</div>
-
-			<div id="updateStatusModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						
-					</div>
-				</div>
-			</div>
-
+			
 			<script type="text/javascript">
 				var id_teacher = <?php echo $teacher->id_teacher; ?>
 			</script>
