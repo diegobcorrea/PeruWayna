@@ -22,7 +22,7 @@ get_header(); ?>
 			</div>
 		</div>
 
-		<form id="updateStudent" class="form-horizontal" method="post" action="" role="form">
+		<form id="updateStudent" class="updateProfile form-horizontal" method="post" action="" role="form">
 		<div class="firststep">
 			<div class="header-message">
 				<div class="medium color gray ta-center">Editar mi perfil</div>

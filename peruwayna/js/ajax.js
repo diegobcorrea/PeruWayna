@@ -1391,20 +1391,20 @@ jq(document).ready(function() {
 	});
 
 	setInterval(function() {
-		if (jq("#inputOldPassword").val() != '' && jq("#inputOldPassword").length < 1 ) 
+		if (jq(".updateProfile #inputOldPassword").val() != '' && jq(".updateProfile #inputOldPassword").length < 1 ) 
 		{
-			jq("input#inputPassword").prop('disabled', true);
-		    jq("input#inputRePassword").prop('disabled', true);
+			jq(".updateProfile input#inputPassword").prop('disabled', true);
+		    jq(".updateProfile input#inputRePassword").prop('disabled', true);
 		}
-		else if (jq("#inputOldPassword").hasClass('valid') ) 
+		else if (jq(".updateProfile #inputOldPassword").hasClass('valid') ) 
 		{
-			jq("input#inputPassword").prop('disabled', false);
-		    jq("input#inputRePassword").prop('disabled', false);
+			jq(".updateProfile input#inputPassword").prop('disabled', false);
+		    jq(".updateProfile input#inputRePassword").prop('disabled', false);
 		}
 		else
 		{
-			jq("input#inputPassword").prop('disabled', true);
-		    jq("input#inputRePassword").prop('disabled', true);
+			jq(".updateProfile input#inputPassword").prop('disabled', true);
+		    jq(".updateProfile input#inputRePassword").prop('disabled', true);
 		}
 	}, 200);
 
