@@ -141,13 +141,13 @@ get_header(); ?>
 				<div class="form-group">
 					<label for="inputPassword" class="col-sm-4 control-label text-right">Contraseña</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputPassword" name="password" required="">
+						<input type="password" class="form-control" id="inputPassword" name="password" required="">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="inputRePassword" class="col-sm-4 control-label text-right">Repetir contraseña</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="inputRePassword" name="repassword" required="">
+						<input type="password" class="form-control" id="inputRePassword" name="repassword" required="">
 					</div>
 				</div>
 				<div class="center-btn">
