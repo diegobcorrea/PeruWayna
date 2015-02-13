@@ -471,11 +471,15 @@ function fetchFreeDays(year, month, id_teacher) {
                             jq(".loader").hide();
                         }, 500);
                           
-                        var arr = jq.parseJSON(data);
+                        if(data != 'error' ){
+                            var arr = jq.parseJSON(data);
 
-                        jq.each( arr, function( i, val ) {
-                            jq('.checkbox input[value="'+val+'"]').prop('disabled', true).prop('checked', true);
-                        });
+                            jq.each( arr, function( i, val ) {
+                                jq('.checkbox input[value="'+val+'"]').prop('disabled', true).prop('checked', true);
+                            });
+                        }else{
+                            console.log('no hay clases en este dia');
+                        }
                     },
                     error: function(MLHttpRequest, textStatus, errorThrown) {
                         alert(errorThrown);

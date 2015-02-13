@@ -343,7 +343,7 @@ function get_teacher_hour_callback() {
             endforeach;
             $results = json_encode($time);
         }else{
-            $results = 'nothing';
+            $results = 'error';
         }
     }
     else {
@@ -390,6 +390,9 @@ function fetchFreeDays_callback() {
             $time[] = date('j',$date);
         endforeach;
         $results = json_encode($time);
+    }
+    else{
+        $results = "fail";
     }
 
     // Return the String
