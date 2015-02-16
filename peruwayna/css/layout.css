@@ -135,12 +135,18 @@ h1.separator {
     margin-bottom: 0;
     margin-top: 5px;
 }
+.daySelected {
+    background-color: blue !important;
+}
 
 /* # Admin Panel - General
 ================================================== */
 .tag-container, .tag-container img {
     height: 140px;
     width: 140px;
+}
+img.instructions-img {
+    width: 100%;
 }
 label.error {
     color: red;
@@ -422,8 +428,8 @@ table.table-condensed thead tr:first-child th {
     margin-right: 5px;
     width: 14px;
 }
-.noclass span {
-    background-color: #E0E0E0;
+.hasclass span {
+    background-color: blue;
     float: left;
     height: 14px;
     margin-right: 5px;

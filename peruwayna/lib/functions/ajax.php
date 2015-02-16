@@ -282,20 +282,6 @@ function add_teacher_hour_callback() {
 
     if ( $_POST['hour'] != '' OR $_POST['date'] != '' OR $_POST['teacher'] ) {
         $wpdb->insert( 
-            'wp_bs_availability', 
-            array( 
-                'id_teacher'            => $_POST['teacher'], 
-                'available_date'        => $_POST['date'], 
-                'available_time'        => $_POST['hour'],
-            ), 
-            array( 
-                '%d',
-                '%s',
-                '%s',
-            ) 
-        );
-
-        $wpdb->insert( 
             'wp_bs_class', 
             array( 
                 'id_student'            => '', 
@@ -314,6 +300,25 @@ function add_teacher_hour_callback() {
                 '%s',
             ) 
         );
+        $lastid = $wpdb->insert_id;
+
+        if($lastid):
+            $wpdb->insert( 
+                'wp_bs_availability', 
+                array( 
+                    'id_class'              => $lastid,
+                    'id_teacher'            => $_POST['teacher'], 
+                    'available_date'        => $_POST['date'], 
+                    'available_time'        => $_POST['hour'],
+                ), 
+                array( 
+                    '%d',
+                    '%d',
+                    '%s',
+                    '%s'
+                ) 
+            );
+        endif;
 
         $results = $_POST['hour'];
     }
@@ -1566,7 +1571,10 @@ function get_all_hour_callback() {
     $date       = $_POST['date'];
 
     if ( $_POST['date'] != '' ) {
-        $getHours = $wpdb->get_results( "SELECT available_time FROM wp_bs_availability WHERE available_date = '$date' GROUP BY available_time ORDER BY available_time ASC", OBJECT ); ?>
+        $getHours = $wpdb->get_results( "SELECT * FROM wp_bs_availability WHERE available_date = '$date' ORDER BY available_time ASC", OBJECT ); 
+
+        ?>
+
         <script type="text/javascript">
         jq(document).ready(function() {
             jq('#available_time-hours').dataTable( {
@@ -1575,7 +1583,7 @@ function get_all_hour_callback() {
                 "paging":         false,
                 "order": [ [0,"asc"] ],
                 "columnDefs": [ {
-                    "targets": [ 0 ],
+                    "targets": [ 0, 3 ],
                     "visible": false,
                     "searchable": false
                 } ],
@@ -1593,8 +1601,11 @@ function get_all_hour_callback() {
             <thead>
                 <tr>
                     <th class="text-center" style="width: 70px">ID</th>
-                    <th class="text-center" style="width: 150px">Horario</th>
-                    <th class="text-center" style="width: 50px">Acción</th>
+                    <th class="text-center" style="width: 80px">Desde</th>
+                    <th class="text-center" style="width: 80px">Hasta</th>
+                    <th class="text-center" style="width: 20px">ID Profesor</th>
+                    <th class="text-center" style="width: 200px">Profesor</th>
+                    <th class="text-center" style="width: 60px">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -1607,11 +1618,19 @@ function get_all_hour_callback() {
                 $newDate = date("d-m-Y");
                 $formatedHour = date('HH:ii', strtotime($newDate . ' ' . $getH->available_time) );
 
+                $teacher = $wpdb->get_row( "SELECT * FROM wp_bs_teacher WHERE id_teacher = '$getH->id_teacher'", OBJECT );
+                $teacherName = $teacher->name_teacher .' '.$teacher->lastname_teacher;
+                $end_hour = date("h:i A", strtotime('+30 minutes', strtotime($getH->available_time) ) );
+                $sm_hour = str_replace(':','-',str_replace(' ','_',$getH->available_time));
+
                 ?>
                 <tr>
                     <td><?php echo $formatedHour; ?></td>
-                    <td><?php echo $getH->available_time; ?></td>
-                    <td><input type="checkbox" value="<?php echo $getH->available_time; ?>"></td>
+                    <td class="text-center"><?php echo $getH->available_time; ?></td>
+                    <td class="text-center"><?php echo $end_hour; ?></td>
+                    <td class="text-center"><?php echo $getH->id_teacher; ?></td>
+                    <td class="text-center"><?php echo $teacherName; ?></td>
+                    <td class="text-center"><input type="checkbox" value="<?php echo $getH->available_time; ?>" data-id="<?php echo $getH->id_teacher; ?>_<?php echo $getH->available_date; ?>_<?php echo $sm_hour; ?>"></td>
                 </tr>
             <?php endforeach;
         } ?>
@@ -1705,7 +1724,7 @@ function validateClasses_callback() {
         $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_teacher = $id_teacher AND date_class = '$day_class'", OBJECT );
         
         $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['id'] = $id_teacher;
-        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['day_class'] = $getClass->date_class;
+        $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['day_class'] = dateLatinToDate($getClass->date_class);
         $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['start_class'] = $value;
         $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['end_class'] = date("h:i A", strtotime('+30 minutes', strtotime($value) ) );
         $getData['data'][$id_teacher.'-'.$day_class.'-'.$data[2]]['teacher_name'] = $getTeacher->name_teacher .' '. $getTeacher->lastname_teacher;

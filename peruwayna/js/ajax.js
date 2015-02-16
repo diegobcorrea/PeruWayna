@@ -1270,7 +1270,7 @@ jq(document).ready(function() {
 	jq("a#validateClassesBtn").click(function(e){
 		e.preventDefault();
 
-		jq("#booking-class.step-one").slideUp(1000);
+		jq("#booking-byhour.step-one").slideUp(1000);
 
 		var toJSON = JSON.stringify(sessionStorage);
 
@@ -1326,25 +1326,10 @@ jq(document).ready(function() {
 
 		jq("#booking-class.step-two").hide();
 
-		// Usar sessionStorage.length para hacer un for e ir agregando el "disabled" a los a# que coincidan.
-		var itemsNum = sessionStorage.length - 1;
-		var i = 0;
-
-		for (i; i <= itemsNum; i++) {
-            var ID = sessionStorage.key(i);
-            var sameID = ID.split("_");
-
-	        jq("a:regex(id, .*"+sameID[1]+"_"+sameID[2]+".*)").addClass('disabled');
-	        jq('a#'+ID).removeClass("disabled");
-
-            if( jq('a#'+ID).hasClass("addTeacher") ){
-                jq('a#'+ID).removeClass("addTeacher").addClass("removeTeacher").text("Quitar clase");
-            }
-            // jq('a#'+ID).addClass('disabled');
-        };
+		checkClassesStorage();
 
 		setTimeout(function() {
-			jq("#booking-class.step-one").slideDown(1000);
+			jq("#booking-byhour.step-one").slideDown(1000);
 		}, 500);
 	});
 

@@ -710,6 +710,7 @@ function classesByHour(year, month) {
                 endDate: endDate,
             }).on('changeDate', function(e){
                 jq('#chooseDate').val(e.format('yyyy-mm-dd'));
+                jq('#daySelected').val(e.format('dd'));
                 jq('form.chooseHours').fadeIn(2000);
                 jq(".loader").show();
                 jq('.checkbox input[type=checkbox]').prop('disabled', false).prop('checked', false);
@@ -733,75 +734,108 @@ function classesByHour(year, month) {
                             jq(".loader").hide();
                         }, 500);
                         hoursDays = [];
+                        daysSelected = [];
+
+                        checkClassesStorage();
 
                         jq('div.availableH td input[type="checkbox"]').click(function() {
 
                             //jq('#booking-class.step-one').slideUp(1000);
+                            var sameTime = jq(this).val();
+
+                            var hour = '';
+                            var date = '';
+
+                            hour        = jq(this).val();
+                            date        = jq('#chooseDate').val();
+                            daySelected = jq('#daySelected').val();
+                            idItem      = jq(this).data('id');
 
                             if(jq(this).is(':checked')){
 
-                                jq('div.availableH td input[type="checkbox"]').not(this).prop('checked', false);  
-
-                                var hour = '';
-                                var date = '';
-
-                                hour = jq(this).val();
-                                date = jq('#chooseDate').val();
-
-                                jq.ajax({
-                                    type: 'POST',         
-                                    url: apfajax.ajaxurl,
-                                    data: {
-                                        action: 'choose_classteacher',
-                                        hour: hour,
-                                        date: date,
-                                    },
-                                    success: function(data, textStatus, XMLHttpRequest) {       
-                                        //jq('#teacher-info').html(data);
-                                        var arr = jq.parseJSON(data);  
-                                        var dataTable = jq('#selected-hours').dataTable();
-
-                                        dataTable.fnClearTable();
-
-                                        jq.each( arr['teacher'], function( i, val ) {
-                                            dataTable.fnAddData([
-                                                val['name'],
-                                                val['image'],
-                                                val['description'],
-                                                val['action'],
-                                            ]);
-
-                                            var itemsNum = sessionStorage.length - 1;
-                                            var i = 0;
-
-                                            for (i; i <= itemsNum; i++) {
-                                                var ID = sessionStorage.key(i);
-                                                var sameID = ID.split("_");
-                                                console.log(sameID[1] + '_' + sameID[2]);
-
-                                                jq("a:regex(id, .*"+sameID[1]+"_"+sameID[2]+".*)").addClass('disabled');
-                                                jq('a#'+ID).removeClass("disabled");
-
-                                                if( jq('a#'+ID).hasClass("addTeacher") ){
-                                                    jq('a#'+ID).removeClass("addTeacher").addClass("removeTeacher").text("Quitar clase");
-                                                }
-                                                // jq('a#'+ID).addClass('disabled');
-                                            };
-                                        });
-
-                                        jq('#selected-hours td').each(function() {
-                                            jq(this).addClass('text-center');
-                                        });
-
-                                        jq('.step-one #dayhourBox').slideDown(1000);
-                                        jq('.step-one span.date').html(date);
-                                        jq('.step-one span.hour').html(hour);
-
-                                    },
-                                    error: function(MLHttpRequest, textStatus, errorThrown) {
-                                        alert(errorThrown);
+                                jq('div.availableH td input[type=checkbox]').not(this).each(function(){
+                                    if( jq(this).val() == sameTime ){
+                                        jq(this).addClass('disabled');
+                                        jq(this).prop('disabled', true);                         
+                                        jq(this).parent().parent().css({'color':'rgba(51, 51, 51,.5)'});
                                     }
                                 });
+
+                                jq('.datepicker-days .table-condensed td').each(function() {
+                                    var cellText = jq(this).text(); 
+
+                                    if( cellText == daySelected ){
+                                        jq(this).removeClass('active').addClass('daySelected');
+                                    }
+                                });
+
+                                sessionStorage.setItem(idItem , hour);
+
+                                // jq.ajax({
+                                //     type: 'POST',         
+                                //     url: apfajax.ajaxurl,
+                                //     data: {
+                                //         action: 'choose_classteacher',
+                                //         hour: hour,
+                                //         date: date,
+                                //     },
+                                //     success: function(data, textStatus, XMLHttpRequest) {       
+                                //         //jq('#teacher-info').html(data);
+                                //         var arr = jq.parseJSON(data);  
+                                //         var dataTable = jq('#selected-hours').dataTable();
+
+                                //         dataTable.fnClearTable();
+
+                                //         jq.each( arr['teacher'], function( i, val ) {
+                                //             dataTable.fnAddData([
+                                //                 val['name'],
+                                //                 val['image'],
+                                //                 val['description'],
+                                //                 val['action'],
+                                //             ]);
+
+                                //             var itemsNum = sessionStorage.length - 1;
+                                //             var i = 0;
+
+                                //             for (i; i <= itemsNum; i++) {
+                                //                 var ID = sessionStorage.key(i);
+                                //                 var sameID = ID.split("_");
+                                //                 console.log(sameID[1] + '_' + sameID[2]);
+
+                                //                 jq("a:regex(id, .*"+sameID[1]+"_"+sameID[2]+".*)").addClass('disabled');
+                                //                 jq('a#'+ID).removeClass("disabled");
+
+                                //                 if( jq('a#'+ID).hasClass("addTeacher") ){
+                                //                     jq('a#'+ID).removeClass("addTeacher").addClass("removeTeacher").text("Quitar clase");
+                                //                 }
+                                //                 // jq('a#'+ID).addClass('disabled');
+                                //             };
+                                //         });
+
+                                //         jq('#selected-hours td').each(function() {
+                                //             jq(this).addClass('text-center');
+                                //         });
+
+                                //         jq('.step-one #dayhourBox').slideDown(1000);
+                                //         jq('.step-one span.date').html(date);
+                                //         jq('.step-one span.hour').html(hour);
+
+                                //     },
+                                //     error: function(MLHttpRequest, textStatus, errorThrown) {
+                                //         alert(errorThrown);
+                                //     }
+                                // });
+                            }
+                            else{
+                                jq('div.availableH td input[type=checkbox]').not(this).each(function(){
+                                    if( jq(this).val() == sameTime ){
+                                        jq(this).removeClass('disabled');
+                                        jq(this).prop('disabled', false);                         
+                                        jq(this).parent().parent().css({'color':'rgba(51, 51, 51,1)'});
+                                    }
+                                });
+
+                                sessionStorage.removeItem(idItem);
                             }
                         });
                     },
@@ -833,6 +867,10 @@ function classesByHour(year, month) {
                 jq('.datepicker-days .table-condensed td').each(function() {
                     jq(this).not('.hasclass').addClass('disabled');
                 });
+
+                if(sessionStorage.length > 0){
+                    checkClassesStorage();
+                }
             }else{
                 jq('.datepicker-days .table-condensed td').each(function() {
                     jq(this).not('.hasclass').addClass('disabled');
@@ -868,6 +906,43 @@ function remove_accent(str){
     };
 
     return str_array.join('');
+}
+
+function checkClassesStorage() {
+    var selector    = jq('div.availableH td input[type=checkbox]');
+    var daySelected = jq('.datepicker-days .table-condensed td');
+    var itemsNum    = sessionStorage.length - 1;
+    var i           = 0;
+
+    for (i; i <= itemsNum; i++) {
+        var ID = sessionStorage.key(i);
+        var separate = ID.split("_");
+        var getDay = separate[1].split("-");
+
+        selector.each(function(){
+            if( jq(this).data('id') == ID ){
+                jq(this).prop('checked', true);
+
+                var sameTime = jq(this).val();
+
+                selector.not(this).each(function(){
+                    if( jq(this).val() == sameTime ){
+                        jq(this).addClass('disabled');
+                        jq(this).prop('disabled', true);                         
+                        jq(this).parent().parent().css({'color':'rgba(0,0,0,.5)'});
+                    }
+                });
+            }
+        });
+
+        daySelected.each(function() {
+            var cellText = jq(this).text(); 
+
+            if( cellText == getDay[2] ){
+                jq(this).removeClass('active').addClass('daySelected');
+            }
+        });
+    };
 }
 
 function centerModal() {

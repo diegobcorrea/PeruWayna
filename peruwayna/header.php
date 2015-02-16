@@ -24,21 +24,9 @@ session_start();
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width" />
 
+	<title><?php wp_title( '|', true, 'right' ); ?></title>
+
 	<?php if (is_single()) : ?>
-	<?php
-
-	$name 			= get_post_meta($post->ID, 'name_value', true);
-	$lastname 		= get_post_meta($post->ID, 'lastname_value', true);
-	$team 			= get_post_meta($post->ID, 'team_value', true);
-	$video_type 	= get_post_meta($post->ID, 'video_type_value', true);
-	$video_id 		= get_post_meta($post->ID, 'video_id_value', true);
-	$imageShare 	= get_post_meta($post->ID, 'video_image_value', true);
-	$votes 			= get_post_meta($post->ID, 'votes_value', true);
-	$dni 			= get_post_meta($post->ID, 'dni_value', true);
-
-	?>
-	<title>Ficha de <?php echo $name; ?> <?php echo $lastname; ?> | Pichanga Tottus</title>
-
 	<meta property="og:site_name" content="Ficha de <?php echo $name; ?> <?php echo $lastname; ?> | Pichanga Tottus" />
 	<meta property="og:locale" content="es_ES" />
 	<meta property="og:url" content="<?php echo get_permalink( $post->ID ) ?>"/>
@@ -47,8 +35,6 @@ session_start();
 	<link rel="image_src" href="<?php echo $imageShare; ?>" id="image_src" />
 	<!-- if page is others -->
 	<?php else : ?>
-	<title><?php wp_title( '|', true, 'right' ); ?></title>
-	
 	<meta property="og:image" content="http://maspormenos.com.pe/pichangatottus/wp-content/themes/tottus/images/bg-widescreen.png">
 	<link rel="image_src" href="http://maspormenos.com.pe/pichangatottus/wp-content/themes/tottus/images/bg-widescreen.png" id="image_src" />
 	<meta property="og:description" content="<?php echo $description; ?>">
