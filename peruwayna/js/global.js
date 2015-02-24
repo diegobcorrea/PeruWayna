@@ -419,13 +419,16 @@ function fetchFreeDays(year, month, id_teacher) {
             id_teacher: id_teacher    
         },
         success: function(data, textStatus, XMLHttpRequest) {       
-            if(data != ''){
+            if(data == 'fail'){
+                // do nothing
+                freeDays = [];
+            }else{
                 var arr = jq.parseJSON(data);
 
                 jq.each(arr, function(index, value) {
                     freeDays.push(value); // add this date to the freeDays array
                 });
-            };
+            }
 
             jq(".loader").fadeOut(500);
 
