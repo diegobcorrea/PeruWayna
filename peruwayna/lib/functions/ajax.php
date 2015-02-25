@@ -800,7 +800,10 @@ function classesByTeacher_callback() {
 
     $currentTime = date('h:i A');
 
-    $getHours = $wpdb->get_results( "SELECT available_date FROM wp_bs_availability WHERE id_teacher = $id_teacher AND available_date >= '$startdate' AND available_date <= '$enddate' GROUP BY available_date ASC", OBJECT );
+    $getHours = $wpdb->get_results( "SELECT wp_bs_availability.* FROM wp_bs_availability JOIN wp_bs_class 
+        WHERE wp_bs_availability.id_teacher = $id_teacher AND wp_bs_availability.available_date >= '$startdate' AND wp_bs_availability.available_date <= '$enddate' 
+        AND (wp_bs_class.status LIKE 'DISPONIBLE' OR wp_bs_class.status LIKE 'CANCELADA +' OR wp_bs_class.status LIKE 'CANCELADA -')
+        GROUP BY wp_bs_availability.available_date ASC", OBJECT );
 
     $time = array();
 
@@ -987,7 +990,9 @@ function finish_booking_callback() {
         $id_class = $class;
         $update = $wpdb->query("UPDATE wp_bs_class SET status = 'CONFIRMADA', id_student = '$id_student' WHERE id_class = '$id_class'");
         $getClass = $wpdb->get_row( "SELECT * FROM wp_bs_class WHERE id_class = '$id_class'", OBJECT );
-        $delete = $wpdb->query("DELETE FROM wp_bs_availability WHERE id_teacher = '$getClass->id_teacher' AND available_date = '$getClass->date_class' AND available_time = '$getClass->start_class'");
+        // Don't delete in reservation
+        // Add delete from "wp_bs_availability" when status change to CONFIRMADA or EXPIRADA
+        //$delete = $wpdb->query("DELETE FROM wp_bs_availability WHERE id_teacher = '$getClass->id_teacher' AND available_date = '$getClass->date_class' AND available_time = '$getClass->start_class'");
 
         email_template_classconfirm( $id_class );
     endforeach;

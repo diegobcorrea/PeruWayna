@@ -725,6 +725,7 @@ function updatestatus_do_this_twice() {
 		if($class->status == 'CONFIRMADA'){
 			if($hours == 0 AND $minutes == 0 AND $second == 0 OR $dteDiff->invert == 1){
 				$wpdb->update( 'wp_bs_class', array('status' => 'COMPLETADA'), array('id_class' => $class->id_class), array('%s'), array('%d') );
+				$wpdb->query("DELETE FROM wp_bs_availability WHERE id_teacher = '$class->id_teacher' AND available_date = '$class->date_class' AND available_time = '$class->start_class'");
 			}
 		}
 	endforeach;

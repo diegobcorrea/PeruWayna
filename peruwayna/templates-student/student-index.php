@@ -326,4 +326,51 @@ get_header(); ?>
 		</div>
 	</div>
 
+	<?php 
+
+		global $wpdb, $dias, $meses;
+		
+		$h = "5";
+	    $hm = $h * 60; 
+	    $ms = $hm * 60;
+
+		$now = date('Y-m-d',time()-($ms));
+		$time = date('h:i A',time()-($ms));
+		$getClasses = $wpdb->get_results( "SELECT * FROM wp_bs_class WHERE status = 'CONFIRMADA' ORDER BY date_class ASC", OBJECT );
+
+		foreach ($getClasses as $key => $class) : 
+			$date = explode("-", $class->date_class);
+			$formatDate = $date[0].'-'.$date[1].'-'.$date[2] . $class->end_class;
+			$date = strtotime( $date[0].'/'.$date[1].'/'.$date[2] . $class->start_class ); 
+
+			$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+			$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+
+		    $today = date('Y-m-d h:i A',time()-($ms));
+
+			$dteStart = new DateTime($today); 
+			$dteEnd   = new DateTime($formatDate);
+
+			$dteDiff  = $dteStart->diff($dteEnd);
+			$hours = $dteDiff->h;
+			$minutes = $dteDiff->i;
+			$second = $dteDiff->s;
+
+			echo "<pre>";
+			print_r($dteDiff);
+			echo "</pre>";
+
+			if($class->status == 'CONFIRMADA'){
+				if($hours == 0 AND $minutes == 0 AND $second == 0 OR $dteDiff->invert == 1){
+					echo $hours . " / ";
+					echo $minutes . " / ";
+					echo $second . " / ";
+					// $wpdb->update( 'wp_bs_class', array('status' => 'COMPLETADA'), array('id_class' => $class->id_class), array('%s'), array('%d') );
+					// $wpdb->query("DELETE FROM wp_bs_availability WHERE id_teacher = '$class->id_teacher' AND available_date = '$class->date_class' AND available_time = '$class->start_class'");
+				}
+			}
+		endforeach;
+
+	?>
+
 <?php get_footer(); ?>
