@@ -288,8 +288,8 @@ function email_template_classconfirm( $id_class ){
 function email_template_classconfirm_student( $classes, $email ){
     global $wpdb;
 
-    // $to = $email;
-    $to = 'ddumst@gmail.com';
+    $to = $email;
+    //$to = 'ddumst@gmail.com';
 
     $subject = 'Peruwayna: Mi lista de clases reservadas';
 
